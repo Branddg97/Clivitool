@@ -1,1 +1,14 @@
+# Netlify redirects for Next.js static export
+
+# Handle specific routes
+/admin    /admin.html   200
+/dashboard    /dashboard.html   200
+/profile    /profile.html   200
+/search.bak    /search.bak.html   200
+
+# Handle dynamic routes
+/process/*    /index.html   200
+/processes/*    /index.html   200
+
+# Handle everything else
 /*    /index.html   200
