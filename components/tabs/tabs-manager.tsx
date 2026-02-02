@@ -214,6 +214,22 @@ export function TabsProvider({ children }: { children: ReactNode }) {
   )
 }
 
+export function ConditionalTabsHeader() {
+  const { tabs } = useTabs()
+  
+  // Solo mostrar pestañas si hay un usuario logueado y no estamos en login
+  if (typeof window !== 'undefined') {
+    const user = sessionStorage.getItem("user")
+    const pathname = window.location.pathname
+    
+    if (!user || pathname === '/login') {
+      return null
+    }
+  }
+  
+  return <TabsHeader />
+}
+
 export function TabsHeader() {
   const { tabs, activeTabId, closeTab, setActiveTab, openTab } = useTabs()
 

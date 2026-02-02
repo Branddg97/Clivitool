@@ -38,13 +38,9 @@ export function LoginForm() {
     }
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      })
-
-      const result = await response.json()
+      // Usar autenticación del lado del cliente para static export
+      const { clientAuth } = await import("@/lib/client-auth")
+      const result = await clientAuth.login(email, password)
 
       if (result.success) {
         // Store user data in sessionStorage
