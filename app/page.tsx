@@ -1,22 +1,43 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
 export default function HomePage() {
   const router = useRouter()
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    // Verificar si hay un usuario en sesión
+    setIsClient(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isClient) return
+    
+    console.log("Checking user session...")
     const user = sessionStorage.getItem("user")
+    console.log("User found:", user)
+    
+    // Forzar redirección inmediata
     if (user) {
-      // Si hay usuario, redirigir al dashboard
-      router.push("/dashboard")
+      console.log("Redirecting to dashboard...")
+      window.location.href = "/dashboard"
     } else {
-      // Si no hay usuario, redirigir al login
-      router.push("/login")
+      console.log("Redirecting to login...")
+      window.location.href = "/login"
     }
-  }, [router])
+  }, [isClient])
+
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Cargando...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
