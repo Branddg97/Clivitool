@@ -214,6 +214,66 @@ export function TabsProvider({ children }: { children: ReactNode }) {
   )
 }
 
+export function TabsHeader() {
+  const { tabs, activeTabId, closeTab, setActiveTab, openTab } = useTabs()
+
+  const openNewTab = () => {
+    openTab({
+      title: "Dashboard",
+      path: "/dashboard",
+      type: "dashboard",
+    })
+  }
+
+  return (
+    <div className="bg-white border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center space-x-1 overflow-x-auto tabs-scroll">
+          {tabs.map((tab) => (
+            <div
+              key={tab.id}
+              className={`
+                flex items-center space-x-2 px-4 py-2 border-b-2 transition-colors cursor-pointer
+                ${
+                  activeTabId === tab.id
+                    ? "border-blue-600 bg-blue-50 text-blue-700"
+                    : "border-transparent hover:bg-gray-50 text-gray-600 hover:text-gray-900"
+                }
+              `}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <span className="text-sm font-medium whitespace-nowrap truncate max-w-[200px]">
+                {tab.title}
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  closeTab(tab.id)
+                }}
+                className="ml-1 hover:bg-gray-200 rounded p-0.5 transition-colors"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          ))}
+          
+          {/* Botón para nueva pestaña */}
+          <button
+            onClick={openNewTab}
+            className="flex items-center space-x-1 px-4 py-2 border-b-2 border-transparent hover:bg-gray-50 text-gray-600 hover:text-gray-900 transition-colors"
+            title="Nueva pestaña"
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="text-sm font-medium">Nueva pestaña</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function TabsBar() {
   const { tabs, activeTabId, closeTab, setActiveTab } = useTabs()
 

@@ -4,7 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
-import { TabsProvider, TabsBar } from "@/components/tabs/tabs-manager"
+import { TabsProvider, TabsHeader } from "@/components/tabs/tabs-manager"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -24,8 +24,8 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <TabsProvider>
+            <TabsHeader />
             {children}
-            <TabsBar />
           </TabsProvider>
           <Toaster />
         </ThemeProvider>
