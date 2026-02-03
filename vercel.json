@@ -1,0 +1,40 @@
+{
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard.html"
+    },
+    {
+      "source": "/profile",
+      "destination": "/profile.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/login.html"
+    },
+    {
+      "source": "/search",
+      "destination": "/search.html"
+    },
+    {
+      "source": "/search.bak",
+      "destination": "/search.bak.html"
+    },
+    {
+      "source": "/process/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/processes/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
