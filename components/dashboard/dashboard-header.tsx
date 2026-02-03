@@ -11,10 +11,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogOut, Settings, User, HelpCircle, Plus, Search, LayoutDashboard, FolderOpen } from "lucide-react"
+import { 
+  Bell,
+  ChevronDown,
+  HelpCircle,
+  LogOut,
+  Settings,
+  User,
+  Plus,
+} from "lucide-react"
 import Image from "next/image"
 import { useTabsSafe } from "@/components/tabs/tabs-manager"
 import { processCategories } from "@/lib/processes-data"
+import { LayoutDashboard, Search, FolderOpen } from "lucide-react"
 
 interface UserData {
   id: string
@@ -225,8 +234,9 @@ export function DashboardHeader() {
               Ayuda
             </Button>
 
-            <Button variant="ghost" size="sm" onClick={() => (window.location.href = "/admin/processes")}>
-              Administrar Procesos
+            <Button variant="ghost" size="sm" onClick={() => (window.location.href = "/admin")}>
+              <Settings className="h-4 w-4 mr-2" />
+              ADMIN
             </Button>
 
             <DropdownMenu>
