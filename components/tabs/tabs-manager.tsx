@@ -77,6 +77,12 @@ export function TabsProvider({ children }: { children: ReactNode }) {
       return
     }
 
+    // Limitar a máximo 5 pestañas
+    if (tabs.length >= 5) {
+      alert('Máximo de 5 pestañas permitidas. Cierra una pestaña para abrir otra.')
+      return
+    }
+
     const tabId = `${tab.type}-${Date.now()}`
     const newTab: Tab = {
       ...tab,
@@ -85,7 +91,13 @@ export function TabsProvider({ children }: { children: ReactNode }) {
     }
 
     setTabs((prev) => {
-      // Verificar si ya existe una pestaña con la misma ruta
+      // Para dashboard, permitir múltiples pestañas con el mismo path pero diferente ID
+      if (tab.type === "dashboard") {
+        // Agregar nueva pestaña de dashboard
+        return [...prev, newTab]
+      }
+      
+      // Para process y category, verificar si ya existe una pestaña con la misma ruta
       const existingTab = prev.find((t) => t.path === tab.path && t.type === tab.type)
       if (existingTab) {
         setActiveTabId(existingTab.id)
@@ -267,8 +279,16 @@ export function TabsHeader() {
   const { tabs, activeTabId, closeTab, setActiveTab, openTab } = useTabs()
 
   const openNewTab = () => {
+    // Limitar a máximo 5 pestañas
+    if (tabs.length >= 5) {
+      alert('Máximo de 5 pestañas permitidas. Cierra una pestaña para abrir otra.')
+      return
+    }
+
+    // Crear nuevo dashboard con nombre único
+    const dashboardNumber = tabs.filter(t => t.type === "dashboard").length + 1
     openTab({
-      title: "Dashboard",
+      title: `Dashboard ${dashboardNumber}`,
       path: "/dashboard",
       type: "dashboard",
     })
