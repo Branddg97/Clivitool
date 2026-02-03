@@ -101,6 +101,7 @@ const STORAGE_KEY = 'clivi_users'
 
 const saveUsersToStorage = (users: User[]) => {
   if (typeof window !== 'undefined') {
+    console.log("Guardando usuarios en localStorage:", users.map((u: User) => ({ id: u.id, email: u.email, role: u.role, status: u.status })))
     localStorage.setItem(STORAGE_KEY, JSON.stringify(users))
   }
 }
@@ -110,8 +111,11 @@ const loadUsersFromStorage = (): User[] => {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
       try {
-        return JSON.parse(stored)
-      } catch {
+        const parsed = JSON.parse(stored)
+        console.log("Cargando usuarios desde localStorage:", parsed.map((u: User) => ({ id: u.id, email: u.email, role: u.role, status: u.status })))
+        return parsed
+      } catch (error) {
+        console.error("Error al cargar usuarios desde localStorage:", error)
         return []
       }
     }
