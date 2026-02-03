@@ -101,23 +101,24 @@ const STORAGE_KEY = 'clivi_users'
 
 const saveUsersToStorage = (users: User[]) => {
   if (typeof window !== 'undefined') {
-    console.log("Guardando usuarios en localStorage:", users.map((u: User) => ({ id: u.id, email: u.email, role: u.role, status: u.status })))
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(users))
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(users))
+    } catch (error) {
+      console.error("Error guardando usuarios:", error)
+    }
   }
 }
 
 const loadUsersFromStorage = (): User[] => {
   if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      try {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
         const parsed = JSON.parse(stored)
-        console.log("Cargando usuarios desde localStorage:", parsed.map((u: User) => ({ id: u.id, email: u.email, role: u.role, status: u.status })))
         return parsed
-      } catch (error) {
-        console.error("Error al cargar usuarios desde localStorage:", error)
-        return []
       }
+    } catch (error) {
+      console.error("Error cargando usuarios:", error)
     }
   }
   return []
@@ -246,6 +247,25 @@ export const userStore = {
     users.splice(userIndex, 1)
     saveUsersToStorage(users) // Save to localStorage
     return true
+  },
+
+  // Debug method to check localStorage
+  debugStorage: () => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      console.log("=== DEBUG STORAGE ===")
+      console.log("localStorage tiene datos:", !!stored)
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored)
+          console.log("Usuarios en localStorage:", parsed.map((u: User) => ({ id: u.id, email: u.email, role: u.role, status: u.status })))
+        } catch (error) {
+          console.error("Error parseando localStorage:", error)
+        }
+      }
+      console.log("Usuarios en memoria:", users.map((u: User) => ({ id: u.id, email: u.email, role: u.role, status: u.status })))
+      console.log("===================")
+    }
   },
 }
 

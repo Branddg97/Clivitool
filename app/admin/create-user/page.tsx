@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { UserPlus, Eye, EyeOff, Edit } from "lucide-react"
+import { UserPlus, Eye, EyeOff, Edit, Bug } from "lucide-react"
 import { userStore, type User } from "@/lib/user-store"
 
 interface CreateUserData {
@@ -338,7 +338,30 @@ export default function CreateUserPage() {
             </CardContent>
           </Card>
 
-          {/* Usuarios existentes */}
+            {/* Botón de debug */}
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Bug className="h-5 w-5 mr-2" />
+                  Debug Storage
+                </CardTitle>
+                <CardDescription>
+                  Herramientas para depurar el almacenamiento de usuarios
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  variant="outline" 
+                  onClick={() => userStore.debugStorage()}
+                  className="w-full"
+                >
+                  <Bug className="h-4 w-4 mr-2" />
+                  Ver Debug en Consola
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Usuarios existentes */}
           <Card>
             <CardHeader>
               <CardTitle>Usuarios Existentes</CardTitle>
