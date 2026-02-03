@@ -29,6 +29,8 @@ import {
 import { Label } from "@/components/ui/label"
 import { Search, RefreshCw, Key, CheckCircle, AlertTriangle, Edit, Trash2, User, Mail, Shield } from "lucide-react"
 import { userStore } from "@/lib/user-store"
+import { clientAuth } from "@/lib/client-auth"
+import { canAccessRoute } from "@/lib/permissions"
 
 interface User {
   id: string
@@ -65,18 +67,45 @@ export default function UsersAdminPage() {
   const [resetDetails, setResetDetails] = useState<Array<{ email: string; tempPassword: string }>>([])
 
   useEffect(() => {
-    loadUsers()
+    const checkPermissions = () => {
+      // Verificar si estamos en el cliente
+      if (typeof window === 'undefined') {
+        setIsLoading(false)
+        return
+      }
+
+      const user = clientAuth.getCurrentUser()
+      
+      if (!user) {
+        // Redirigir al login
+        window.location.href = "/login"
+        setIsLoading(false)
+        return
+      }
+
+      // Verificar si puede acceder a /admin
+      if (!canAccessRoute(user.role, "/admin")) {
+        // Redirigir al dashboard si no es admin
+        window.location.href = "/dashboard"
+        setIsLoading(false)
+        return
+      }
+
+      // Cargar usuarios si está autorizado
+      loadUsers()
+      setIsLoading(false)
+    }
+
+    checkPermissions()
   }, [])
 
   const loadUsers = async () => {
     try {
-      const response = await fetch("/api/users")
-      const result = await response.json()
-      if (result.success) {
-        setUsers(result.data)
-      }
+      // Usar userStore directamente en modo estático
+      const usersList = userStore.getAllUsers()
+      setUsers(usersList)
     } catch (error) {
-      console.error("Failed to load users:", error)
+      console.error("Error loading users:", error)
     }
   }
 

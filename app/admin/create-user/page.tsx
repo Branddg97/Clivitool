@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { UserPlus, Eye, EyeOff, Edit, Bug, Trash2 } from "lucide-react"
 import { userStore, type User } from "@/lib/user-store"
+import { clientAuth } from "@/lib/client-auth"
+import { canAccessRoute } from "@/lib/permissions"
 
 interface CreateUserData {
   name: string
@@ -59,6 +61,62 @@ export default function CreateUserPage() {
     role: "agent",
     status: "active"
   })
+  const [isAuthorized, setIsAuthorized] = useState(false)
+
+  useEffect(() => {
+    const checkPermissions = () => {
+      // Verificar si estamos en el cliente
+      if (typeof window === 'undefined') {
+        setIsLoading(false)
+        return
+      }
+
+      const user = clientAuth.getCurrentUser()
+      
+      if (!user) {
+        // Redirigir al login
+        window.location.href = "/login"
+        setIsLoading(false)
+        return
+      }
+
+      // Verificar si puede acceder a /admin
+      if (!canAccessRoute(user.role, "/admin")) {
+        // Redirigir al dashboard si no es admin
+        window.location.href = "/dashboard"
+        setIsLoading(false)
+        return
+      }
+
+      setIsAuthorized(true)
+      setIsLoading(false)
+    }
+
+    checkPermissions()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <span className="ml-2">Verificando permisos...</span>
+      </div>
+    )
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Acceso Denegado</h2>
+          <p className="text-gray-600 mb-4">No tienes permisos para acceder a esta página.</p>
+          <Button onClick={() => (window.location.href = "/dashboard")}>
+            Ir al Dashboard
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

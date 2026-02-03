@@ -1,7 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 import { clientAuth } from "@/lib/client-auth"
 import { canAccessRoute, type UserRole } from "@/lib/permissions"
 import { ConfluenceStatus } from "@/components/admin/confluence-status"
@@ -9,24 +8,25 @@ import { DashboardHeader } from "@/components/dashboard/dashboard-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Edit, User, BarChart3, Plus, UserPlus } from "lucide-react"
-import { processCategories } from "@/lib/processes-data"
-import { useTabsSafe } from "@/components/tabs/tabs-manager"
-import { useState } from "react"
 
 export default function AdminPage() {
-  const router = useRouter()
   const [userRole, setUserRole] = useState<UserRole | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isAuthorized, setIsAuthorized] = useState(false)
 
   useEffect(() => {
     const checkPermissions = () => {
+      // Verificar si estamos en el cliente
+      if (typeof window === 'undefined') {
+        setIsLoading(false)
+        return
+      }
+
       const user = clientAuth.getCurrentUser()
       
       if (!user) {
-        // Si no hay usuario, redirigir al login
-        if (typeof window !== 'undefined') {
-          window.location.href = "/login"
-        }
+        // Redirigir al login
+        window.location.href = "/login"
         setIsLoading(false)
         return
       }
@@ -36,25 +36,38 @@ export default function AdminPage() {
 
       // Verificar si puede acceder a /admin
       if (!canAccessRoute(user.role, "/admin")) {
-        // Si no puede acceder, redirigir al dashboard
-        if (typeof window !== 'undefined') {
-          window.location.href = "/dashboard"
-        }
+        // Redirigir al dashboard si no es admin
+        window.location.href = "/dashboard"
         setIsLoading(false)
         return
       }
 
+      setIsAuthorized(true)
       setIsLoading(false)
     }
 
     checkPermissions()
-  }, [router])
+  }, [])
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-2">Cargando...</span>
+        <span className="ml-2">Verificando permisos...</span>
+      </div>
+    )
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Acceso Denegado</h2>
+          <p className="text-gray-600 mb-4">No tienes permisos para acceder a esta página.</p>
+          <Button onClick={() => (window.location.href = "/dashboard")}>
+            Ir al Dashboard
+          </Button>
+        </div>
       </div>
     )
   }
