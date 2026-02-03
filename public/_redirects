@@ -5,6 +5,7 @@
 /dashboard    /dashboard.html   200
 /profile    /profile.html   200
 /login    /login.html   200
+/search    /search.html   200
 /search.bak    /search.bak.html   200
 
 # Handle dynamic routes

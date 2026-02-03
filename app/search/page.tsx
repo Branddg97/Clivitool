@@ -1,7 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo, Suspense } from "react"
-import { useSearchParams } from "next/navigation"
+import { useState, useEffect, useMemo } from "react"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -11,10 +10,21 @@ import { Search, ArrowLeft, FileText } from "lucide-react"
 import { processList, type Process } from "@/lib/processes-data"
 import Link from "next/link"
 
-function SearchContent() {
-  const searchParams = useSearchParams()
-  const [searchQuery, setSearchQuery] = useState(searchParams?.get("q") || "")
+export default function SearchPage() {
+  // Obtener query parameter de la URL del lado del cliente
+  const [searchQuery, setSearchQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
+
+  useEffect(() => {
+    // Extraer query parameter de la URL
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search)
+      const query = urlParams.get('q')
+      if (query) {
+        setSearchQuery(query)
+      }
+    }
+  }, [])
 
   // Obtener todos los procesos para buscar
   const allProcesses = useMemo(() => {
@@ -52,6 +62,13 @@ function SearchContent() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     setIsSearching(true)
+    
+    // Actualizar URL con el parámetro de búsqueda
+    if (typeof window !== 'undefined' && searchQuery.trim()) {
+      const newUrl = `${window.location.pathname}?q=${encodeURIComponent(searchQuery)}`
+      window.history.pushState({}, '', newUrl)
+    }
+    
     // Simulate search delay
     setTimeout(() => {
       setIsSearching(false)
@@ -205,18 +222,5 @@ function SearchContent() {
         )}
       </main>
     </div>
-  )
-}
-
-export default function SearchPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-2">Cargando...</span>
-      </div>
-    }>
-      <SearchContent />
-    </Suspense>
   )
 }
