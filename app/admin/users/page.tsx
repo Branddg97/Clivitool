@@ -27,7 +27,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import { Search, RefreshCw, Key, CheckCircle, AlertTriangle, Edit } from "lucide-react"
+import { Search, RefreshCw, Key, CheckCircle, AlertTriangle, Edit, Trash2, User, Mail, Shield } from "lucide-react"
+import { userStore } from "@/lib/user-store"
 
 interface User {
   id: string
@@ -45,9 +46,19 @@ export default function UsersAdminPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [showResetAllDialog, setShowResetAllDialog] = useState(false)
   const [showChangePasswordDialog, setShowChangePasswordDialog] = useState(false)
+  const [showEditUserDialog, setShowEditUserDialog] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  
+  // Form data for editing user
+  const [editFormData, setEditFormData] = useState({
+    name: "",
+    email: "",
+    role: "agent" as "admin" | "agent" | "supervisor",
+    status: "active" as "active" | "inactive"
+  })
   const [passwordError, setPasswordError] = useState("")
   const [resetSuccess, setResetSuccess] = useState(false)
   const [resetMessage, setResetMessage] = useState("")
@@ -198,6 +209,85 @@ export default function UsersAdminPage() {
     setShowChangePasswordDialog(true)
   }
 
+  const openEditUserDialog = (user: User) => {
+    setSelectedUser(user)
+    setEditFormData({
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      status: user.status
+    })
+    setShowEditUserDialog(true)
+  }
+
+  const openDeleteDialog = (user: User) => {
+    setSelectedUser(user)
+    setShowDeleteDialog(true)
+  }
+
+  const handleEditUser = async () => {
+    if (!selectedUser) return
+
+    setIsLoading(true)
+    setPasswordError("")
+
+    try {
+      // Validar email único
+      const existingUser = userStore.getUserByEmail(editFormData.email)
+      if (existingUser && existingUser.id !== selectedUser.id) {
+        setPasswordError("Ya existe un usuario con este correo electrónico")
+        setIsLoading(false)
+        return
+      }
+
+      // Actualizar usuario
+      const updates = {
+        name: editFormData.name,
+        email: editFormData.email,
+        role: editFormData.role,
+        status: editFormData.status
+      }
+
+      const updatedUser = userStore.updateUser(selectedUser.id, updates)
+      
+      if (updatedUser) {
+        setResetSuccess(true)
+        setResetMessage(`Usuario "${editFormData.name}" actualizado exitosamente`)
+        setShowEditUserDialog(false)
+        loadUsers() // Recargar lista
+      } else {
+        setPasswordError("Error al actualizar el usuario")
+      }
+    } catch (error) {
+      setPasswordError("Error al actualizar el usuario")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleDeleteUser = async () => {
+    if (!selectedUser) return
+
+    setIsLoading(true)
+
+    try {
+      const success = userStore.deleteUser(selectedUser.id)
+      
+      if (success) {
+        setResetSuccess(true)
+        setResetMessage(`Usuario "${selectedUser.name}" eliminado exitosamente`)
+        setShowDeleteDialog(false)
+        loadUsers() // Recargar lista
+      } else {
+        setPasswordError("Error al eliminar el usuario")
+      }
+    } catch (error) {
+      setPasswordError("Error al eliminar el usuario")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("es-ES", {
       day: "2-digit",
@@ -327,20 +417,30 @@ export default function UsersAdminPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => openChangePasswordDialog(user)}
+                              onClick={() => openEditUserDialog(user)}
                               disabled={isLoading}
                             >
                               <Edit className="h-3 w-3 mr-1" />
-                              Cambiar
+                              Editar
                             </Button>
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => handleResetSinglePassword(user.id)}
+                              onClick={() => openChangePasswordDialog(user)}
                               disabled={isLoading}
                             >
-                              <RefreshCw className="h-3 w-3 mr-1" />
-                              Resetear
+                              <Key className="h-3 w-3 mr-1" />
+                              Contraseña
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => openDeleteDialog(user)}
+                              disabled={isLoading}
+                              className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                            >
+                              <Trash2 className="h-3 w-3 mr-1" />
+                              Eliminar
                             </Button>
                           </div>
                         </TableCell>
@@ -457,6 +557,110 @@ export default function UsersAdminPage() {
             </Button>
             <Button onClick={handleChangePassword} disabled={isLoading}>
               {isLoading ? "Cambiando..." : "Cambiar Contraseña"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit User Dialog */}
+      <Dialog open={showEditUserDialog} onOpenChange={setShowEditUserDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <Edit className="h-5 w-5 mr-2" />
+              Editar Usuario
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="edit-name">Nombre</Label>
+              <Input
+                id="edit-name"
+                value={editFormData.name}
+                onChange={(e) => setEditFormData(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="Nombre del usuario"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-email">Correo Electrónico</Label>
+              <Input
+                id="edit-email"
+                type="email"
+                value={editFormData.email}
+                onChange={(e) => setEditFormData(prev => ({ ...prev, email: e.target.value }))}
+                placeholder="correo@ejemplo.com"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-role">Rol</Label>
+              <select
+                id="edit-role"
+                value={editFormData.role}
+                onChange={(e) => setEditFormData(prev => ({ ...prev, role: e.target.value as "admin" | "agent" | "supervisor" }))}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="agent">Agente</option>
+                <option value="supervisor">Supervisor</option>
+                <option value="admin">Administrador</option>
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="edit-status">Estado</Label>
+              <select
+                id="edit-status"
+                value={editFormData.status}
+                onChange={(e) => setEditFormData(prev => ({ ...prev, status: e.target.value as "active" | "inactive" }))}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="active">Activo</option>
+                <option value="inactive">Inactivo</option>
+              </select>
+            </div>
+            {passwordError && (
+              <Alert>
+                <AlertDescription>{passwordError}</AlertDescription>
+              </Alert>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditUserDialog(false)} disabled={isLoading}>
+              Cancelar
+            </Button>
+            <Button onClick={handleEditUser} disabled={isLoading}>
+              {isLoading ? "Guardando..." : "Guardar Cambios"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete User Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <Trash2 className="h-5 w-5 mr-2 text-red-600" />
+              Eliminar Usuario
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-gray-600">
+              ¿Estás seguro de que deseas eliminar al usuario <strong>{selectedUser?.name}</strong>?
+            </p>
+            <p className="text-sm text-gray-500">
+              Esta acción no se puede deshacer y eliminará permanentemente el usuario del sistema.
+            </p>
+            {passwordError && (
+              <Alert>
+                <AlertDescription>{passwordError}</AlertDescription>
+              </Alert>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDeleteDialog(false)} disabled={isLoading}>
+              Cancelar
+            </Button>
+            <Button onClick={handleDeleteUser} disabled={isLoading} className="bg-red-600 hover:bg-red-700">
+              {isLoading ? "Eliminando..." : "Eliminar Usuario"}
             </Button>
           </DialogFooter>
         </DialogContent>
