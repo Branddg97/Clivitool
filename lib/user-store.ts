@@ -200,15 +200,27 @@ export const userStore = {
 
   // Verify password
   verifyPassword: (email: string, password: string) => {
+    console.log("=== VERIFY PASSWORD ===")
+    console.log("Email buscado:", email)
+    console.log("Password ingresado:", password)
+    
     const user = users.find((u) => u.email === email)
+    
     if (!user) {
-      console.log("Usuario no encontrado para email:", email)
+      console.log("❌ Usuario no encontrado para email:", email)
+      console.log("Emails disponibles:", users.map(u => u.email))
       return false
     }
     
+    console.log("✅ Usuario encontrado:", { id: user.id, email: user.email, role: user.role })
+    console.log("Password guardado:", user.password)
+    console.log("Password ingresado:", password)
+    
     // In production, use bcrypt.compare()
     const isValid = user.password === password
-    console.log("Password válido para", email, ":", isValid)
+    console.log("❓ Password válido:", isValid)
+    console.log("========================")
+    
     return isValid
   },
 
