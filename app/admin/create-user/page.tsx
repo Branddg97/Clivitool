@@ -28,6 +28,16 @@ interface EditUserData {
   status: "active" | "inactive"
 }
 
+interface UserWithoutPassword {
+  id: string
+  name: string
+  email: string
+  role: "admin" | "agent" | "supervisor"
+  status: "active" | "inactive"
+  lastLogin: string
+  passwordLastChanged: string
+}
+
 export default function CreateUserPage() {
   const [formData, setFormData] = useState<CreateUserData>({
     name: "",
@@ -39,7 +49,7 @@ export default function CreateUserPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState("")
-  const [createdUsers, setCreatedUsers] = useState<User[]>([])
+  const [createdUsers, setCreatedUsers] = useState<UserWithoutPassword[]>([])
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [editFormData, setEditFormData] = useState<EditUserData>({
@@ -93,7 +103,16 @@ export default function CreateUserPage() {
         status: formData.status
       })
       
-      setCreatedUsers(prev => [...prev, newUser])
+      setCreatedUsers(prev => [...prev, {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        status: newUser.status,
+        lastLogin: newUser.lastLogin,
+        passwordLastChanged: ""
+      }])
+      
       setMessage(`Usuario "${formData.name}" creado exitosamente`)
       
       // Reset form
