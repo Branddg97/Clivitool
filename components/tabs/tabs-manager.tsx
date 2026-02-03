@@ -72,6 +72,11 @@ export function TabsProvider({ children }: { children: ReactNode }) {
 
   // Abrir una nueva pestaña
   const openTab = (tab: Omit<Tab, "id">) => {
+    // Solo permitir pestañas de dashboard, process o category
+    if (tab.type !== "dashboard" && tab.type !== "process" && tab.type !== "category") {
+      return
+    }
+
     const tabId = `${tab.type}-${Date.now()}`
     const newTab: Tab = {
       ...tab,
@@ -137,29 +142,46 @@ export function TabsProvider({ children }: { children: ReactNode }) {
 
   // Cargar pestañas desde localStorage al iniciar
   useEffect(() => {
+    // Solo cargar pestañas si hay usuario logueado
+    if (typeof window !== 'undefined') {
+      const user = sessionStorage.getItem("user")
+      const pathname = window.location.pathname
+      
+      if (!user || pathname === '/login') {
+        return // No cargar pestañas si no hay usuario o estamos en login
+      }
+    }
+
     const savedTabs = localStorage.getItem("openTabs")
     if (savedTabs) {
       try {
         const parsedTabs = JSON.parse(savedTabs)
-        if (parsedTabs.length > 0) {
-          setTabs(parsedTabs)
-          const currentTab = parsedTabs.find((t: Tab) => t.path === pathname)
+        // Filtrar solo pestañas válidas (dashboard, process, category)
+        const validTabs = parsedTabs.filter((t: Tab) => 
+          t.type === "dashboard" || 
+          t.type === "process" || 
+          t.type === "category"
+        )
+        
+        if (validTabs.length > 0) {
+          setTabs(validTabs)
+          const currentTab = validTabs.find((t: Tab) => t.path === pathname)
           if (currentTab) {
             setActiveTabId(currentTab.id)
           } else {
-            // Si la ruta actual no está en las pestañas, crear una nueva
+            // Si la ruta actual no está en las pestañas válidas, crear una nueva solo si es dashboard o process
             let tabType: Tab["type"] = "dashboard"
             let processId: string | undefined
 
             if (pathname.startsWith("/process/")) {
               tabType = "process"
               processId = pathname.split("/process/")[1]
-            } else if (pathname.startsWith("/search")) {
-              tabType = "search"
             } else if (pathname.startsWith("/processes/")) {
               tabType = "category"
-            } else if (pathname === "/profile") {
-              tabType = "profile"
+            } else if (pathname === "/dashboard") {
+              tabType = "dashboard"
+            } else {
+              return // No crear pestaña para otras rutas
             }
 
             const newTab: Tab = {
@@ -169,7 +191,7 @@ export function TabsProvider({ children }: { children: ReactNode }) {
               type: tabType,
               processId,
             }
-            setTabs([...parsedTabs, newTab])
+            setTabs([...validTabs, newTab])
             setActiveTabId(newTab.id)
           }
         }
@@ -178,23 +200,34 @@ export function TabsProvider({ children }: { children: ReactNode }) {
       }
     }
     
-    // Si no hay pestañas guardadas, crear una para el dashboard
-    if (!savedTabs && (pathname === "/dashboard" || pathname === "/")) {
-      const dashboardTab: Tab = {
-        id: "dashboard-initial",
-        title: "Dashboard",
-        path: "/dashboard",
-        type: "dashboard",
+    // Si no hay pestañas guardadas y estamos en dashboard, crear una pestaña de dashboard
+    if (!savedTabs && typeof window !== 'undefined') {
+      const pathname = window.location.pathname
+      const user = sessionStorage.getItem("user")
+      
+      if (user && pathname === "/dashboard") {
+        const dashboardTab: Tab = {
+          id: "dashboard-initial",
+          title: "Dashboard",
+          path: "/dashboard",
+          type: "dashboard",
+        }
+        setTabs([dashboardTab])
+        setActiveTabId(dashboardTab.id)
       }
-      setTabs([dashboardTab])
-      setActiveTabId(dashboardTab.id)
     }
   }, [])
 
   // Guardar pestañas en localStorage
   useEffect(() => {
     if (tabs.length > 0) {
-      localStorage.setItem("openTabs", JSON.stringify(tabs))
+      // Solo guardar pestañas válidas
+      const validTabs = tabs.filter(t => 
+        t.type === "dashboard" || 
+        t.type === "process" || 
+        t.type === "category"
+      )
+      localStorage.setItem("openTabs", JSON.stringify(validTabs))
     }
   }, [tabs])
 
