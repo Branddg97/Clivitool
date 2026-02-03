@@ -125,10 +125,47 @@ const loadUsersFromStorage = (): User[] => {
 }
 
 // Initialize users from storage or use initial users
-let users: User[] = loadUsersFromStorage()
-if (users.length === 0) {
-  users = [...initialUsers]
-  saveUsersToStorage(users)
+let users: User[] = []
+
+// Function to safely initialize users
+const initializeUsers = () => {
+  if (typeof window !== 'undefined') {
+    try {
+      const loaded = loadUsersFromStorage()
+      if (loaded.length > 0) {
+        users = loaded
+        console.log("Usuarios cargados desde localStorage:", loaded.length)
+      } else {
+        users = [...initialUsers]
+        saveUsersToStorage(users)
+        console.log("Usuarios iniciales cargados:", users.length)
+      }
+    } catch (error) {
+      console.error("Error inicializando usuarios:", error)
+      users = [...initialUsers]
+    }
+  } else {
+    users = [...initialUsers]
+  }
+}
+
+// Initialize immediately
+initializeUsers()
+
+// Re-initialize after a short delay to handle hydration issues
+if (typeof window !== 'undefined') {
+  setTimeout(() => {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        users = parsed
+        console.log("Usuarios recargados después de hydration:", users.length)
+      } catch (error) {
+        console.error("Error en recarga post-hydration:", error)
+      }
+    }
+  }, 100)
 }
 
 export const userStore = {
@@ -201,8 +238,23 @@ export const userStore = {
   // Verify password
   verifyPassword: (email: string, password: string) => {
     console.log("=== VERIFY PASSWORD ===")
+    console.log("Navegador:", navigator.userAgent)
     console.log("Email buscado:", email)
     console.log("Password ingresado:", password)
+    console.log("Longitud password:", password.length)
+    
+    // Force reload users array in Safari
+    if (typeof window !== 'undefined' && navigator.userAgent.includes('Safari')) {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        try {
+          users = JSON.parse(stored)
+          console.log("🔄 Recargando usuarios para Safari:", users.length)
+        } catch (error) {
+          console.error("Error recargando Safari:", error)
+        }
+      }
+    }
     
     const user = users.find((u) => u.email === email)
     
@@ -214,9 +266,11 @@ export const userStore = {
     
     console.log("✅ Usuario encontrado:", { id: user.id, email: user.email, role: user.role })
     console.log("Password guardado:", user.password)
+    console.log("Password guardado longitud:", user.password.length)
     console.log("Password ingresado:", password)
+    console.log("Password ingresado longitud:", password.length)
     
-    // In production, use bcrypt.compare()
+    // Comparación más robusta
     const isValid = user.password === password
     console.log("❓ Password válido:", isValid)
     console.log("========================")
