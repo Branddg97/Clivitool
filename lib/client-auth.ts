@@ -19,8 +19,13 @@ export const clientAuth = {
         }
       }
 
+      // Debug: mostrar usuarios disponibles
+      console.log("Usuarios disponibles:", userStore.getAllUsers())
+      console.log("Intentando login con:", email, password)
+
       // Verificar credenciales usando el userStore
       const isValid = userStore.verifyPassword(email, password)
+      console.log("Verificación de contraseña:", isValid)
       
       if (!isValid) {
         return {
