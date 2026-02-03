@@ -77,6 +77,16 @@ export function TabsProvider({ children }: { children: ReactNode }) {
       return
     }
 
+    // Para process y category, abrir en la pestaña activa si es un dashboard
+    if ((tab.type === "process" || tab.type === "category") && tabs.length > 0) {
+      const activeTab = tabs.find(t => t.id === activeTabId)
+      if (activeTab && activeTab.type === "dashboard") {
+        // Navegar en la misma pestaña dashboard
+        router.push(tab.path)
+        return
+      }
+    }
+
     // Limitar a máximo 5 pestañas
     if (tabs.length >= 5) {
       alert('Máximo de 5 pestañas permitidas. Cierra una pestaña para abrir otra.')
