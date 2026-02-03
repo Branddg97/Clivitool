@@ -81,6 +81,14 @@ export function TabsProvider({ children }: { children: ReactNode }) {
     if ((tab.type === "process" || tab.type === "category") && tabs.length > 0) {
       const activeTab = tabs.find(t => t.id === activeTabId)
       if (activeTab && activeTab.type === "dashboard") {
+        // Guardar el proceso actual en el estado de la pestaña
+        const tabKey = `tab-state-${activeTab.id}`
+        const currentTabState = {
+          currentProcess: tab.path,
+          lastUpdated: Date.now()
+        }
+        localStorage.setItem(tabKey, JSON.stringify(currentTabState))
+        
         // Navegar en la misma pestaña dashboard
         router.push(tab.path)
         return
@@ -101,9 +109,9 @@ export function TabsProvider({ children }: { children: ReactNode }) {
     }
 
     setTabs((prev) => {
-      // Para dashboard, permitir múltiples pestañas con el mismo path pero diferente ID
+      // Para dashboard, permitir múltiples pestañas con paths diferentes
       if (tab.type === "dashboard") {
-        // Agregar nueva pestaña de dashboard
+        // Agregar nueva pestaña de dashboard con path único
         return [...prev, newTab]
       }
       
@@ -295,11 +303,13 @@ export function TabsHeader() {
       return
     }
 
-    // Crear nuevo dashboard con nombre único
+    // Crear nuevo dashboard con nombre único y ID único
     const dashboardNumber = tabs.filter(t => t.type === "dashboard").length + 1
+    const uniqueId = `dashboard-${Date.now()}`
+    
     openTab({
       title: `Dashboard ${dashboardNumber}`,
-      path: "/dashboard",
+      path: `/dashboard?tab=${uniqueId}`, // Usar query param para diferenciar
       type: "dashboard",
     })
   }
