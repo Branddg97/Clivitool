@@ -67,21 +67,13 @@ export default function CreateUserPage() {
       }
 
       // Crear nuevo usuario
-      const newUser: User = {
-        id: Date.now().toString(),
+      const newUser = userStore.addUser({
         name: formData.name,
         email: formData.email,
         password: formData.password,
         role: formData.role,
-        status: formData.status,
-        lastLogin: new Date().toISOString(),
-        passwordLastChanged: new Date().toISOString()
-      }
-
-      // Simular creación (en producción sería una API real)
-      // Acceder al array interno de users
-      const users = (userStore as any).users || []
-      users.push(newUser)
+        status: formData.status
+      })
       
       setCreatedUsers(prev => [...prev, newUser])
       setMessage(`Usuario "${formData.name}" creado exitosamente`)

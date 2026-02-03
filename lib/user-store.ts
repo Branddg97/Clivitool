@@ -69,7 +69,7 @@ const initialUsers: User[] = [
     name: "Brandon Ramos",
     email: "brandon.ramos@evolvecx.io",
     password: "12345",
-    role: "admin", // Cambiado a admin
+    role: "admin",
     status: "active",
     lastLogin: new Date().toISOString(),
     passwordLastChanged: new Date().toISOString(),
@@ -96,6 +96,18 @@ export const userStore = {
     if (!user) return null
     const { password, ...userWithoutPassword } = user
     return userWithoutPassword
+  },
+
+  // Add new user
+  addUser: (user: Omit<User, 'id' | 'lastLogin' | 'passwordLastChanged'>) => {
+    const newUser: User = {
+      ...user,
+      id: Date.now().toString(),
+      lastLogin: new Date().toISOString(),
+      passwordLastChanged: new Date().toISOString(),
+    }
+    users.push(newUser)
+    return newUser
   },
 
   // Update user password
@@ -149,6 +161,14 @@ export const userStore = {
       ...users[userIndex],
       lastLogin: new Date().toISOString(),
     }
+    return true
+  },
+
+  // Delete user
+  deleteUser: (userId: string) => {
+    const userIndex = users.findIndex((u) => u.id === userId)
+    if (userIndex === -1) return false
+    users.splice(userIndex, 1)
     return true
   },
 }
