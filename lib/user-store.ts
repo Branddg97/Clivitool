@@ -74,10 +74,57 @@ const initialUsers: User[] = [
     lastLogin: new Date().toISOString(),
     passwordLastChanged: new Date().toISOString(),
   },
+  {
+    id: "7",
+    name: "Rodrigo Castro",
+    email: "rodrigo.castro@evolvecx.io",
+    password: "123456",
+    role: "agent",
+    status: "active",
+    lastLogin: new Date().toISOString(),
+    passwordLastChanged: new Date().toISOString(),
+  },
+  {
+    id: "8",
+    name: "Prueba Usuario",
+    email: "prueba@evolvecx.io",
+    password: "123456",
+    role: "agent",
+    status: "active",
+    lastLogin: new Date().toISOString(),
+    passwordLastChanged: new Date().toISOString(),
+  },
 ]
 
-// In-memory store
-const users: User[] = [...initialUsers]
+// Helper functions for localStorage persistence
+const STORAGE_KEY = 'clivi_users'
+
+const saveUsersToStorage = (users: User[]) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(users))
+  }
+}
+
+const loadUsersFromStorage = (): User[] => {
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      try {
+        return JSON.parse(stored)
+      } catch {
+        return []
+      }
+    }
+  }
+  return []
+}
+
+// Initialize users from storage or use initial users
+let users: User[] = loadUsersFromStorage()
+if (users.length === 0) {
+  users = [...initialUsers]
+  saveUsersToStorage(users)
+}
 
 export const userStore = {
   // Get all users (without passwords for security)
@@ -107,6 +154,7 @@ export const userStore = {
       passwordLastChanged: new Date().toISOString(),
     }
     users.push(newUser)
+    saveUsersToStorage(users) // Save to localStorage
     return newUser
   },
 
@@ -120,6 +168,7 @@ export const userStore = {
       password: newPassword, // In production, hash this
       passwordLastChanged: new Date().toISOString(),
     }
+    saveUsersToStorage(users) // Save to localStorage
     return true
   },
 
@@ -187,6 +236,7 @@ export const userStore = {
     }
 
     users[userIndex] = updatedUser
+    saveUsersToStorage(users) // Save to localStorage
     return updatedUser
   },
 
@@ -195,6 +245,7 @@ export const userStore = {
     const userIndex = users.findIndex((u) => u.id === userId)
     if (userIndex === -1) return false
     users.splice(userIndex, 1)
+    saveUsersToStorage(users) // Save to localStorage
     return true
   },
 }
