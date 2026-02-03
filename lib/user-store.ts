@@ -69,7 +69,7 @@ const initialUsers: User[] = [
     name: "Brandon Ramos",
     email: "brandon.ramos@evolvecx.io",
     password: "12345",
-    role: "agent",
+    role: "admin", // Cambiado a admin
     status: "active",
     lastLogin: new Date().toISOString(),
     passwordLastChanged: new Date().toISOString(),

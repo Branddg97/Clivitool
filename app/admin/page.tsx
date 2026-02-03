@@ -4,7 +4,7 @@ import { ConfluenceStatus } from "@/components/admin/confluence-status"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Edit, User, BarChart3, Plus } from "lucide-react"
+import { Edit, User, BarChart3, Plus, UserPlus } from "lucide-react"
 
 export default function AdminPage() {
   return (
@@ -30,10 +30,18 @@ export default function AdminPage() {
                 <Button
                   variant="outline"
                   className="h-20 flex-col space-y-2 bg-transparent"
-                  onClick={() => (window.location.href = "/admin/processes")}
+                  onClick={() => (window.location.href = "/admin/manage-processes")}
                 >
                   <Edit className="h-6 w-6" />
                   <span>Gestionar Procesos</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-20 flex-col space-y-2 bg-transparent"
+                  onClick={() => (window.location.href = "/admin/create-user")}
+                >
+                  <UserPlus className="h-6 w-6" />
+                  <span>Crear Usuario</span>
                 </Button>
                 <Button
                   variant="outline"

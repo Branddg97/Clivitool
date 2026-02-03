@@ -268,7 +268,7 @@ export default function CreateUserPage() {
             <CardTitle>Información de Roles</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-4">
               <div className="p-4 border rounded-lg">
                 <h4 className="font-semibold text-blue-800 mb-2">Agente</h4>
                 <ul className="text-sm text-gray-600 space-y-1">
@@ -300,6 +300,92 @@ export default function CreateUserPage() {
                 </ul>
               </div>
             </div>
+
+            {/* Formulario simplificado para registro rápido */}
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <UserPlus className="h-5 w-5 mr-2" />
+                  Registro Rápido de Usuario
+                </CardTitle>
+                <CardDescription>
+                  Formulario simplificado para crear usuarios rápidamente
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="quick-name">Nombre Completo</Label>
+                      <Input
+                        id="quick-name"
+                        value={formData.name}
+                        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="Juan Pérez"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="quick-email">Correo Electrónico</Label>
+                      <Input
+                        id="quick-email"
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                        placeholder="usuario@ejemplo.com"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="quick-password">Contraseña</Label>
+                      <div className="relative">
+                        <Input
+                          id="quick-password"
+                          type={showPassword ? "text" : "password"}
+                          value={formData.password}
+                          onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                          placeholder="Mínimo 6 caracteres"
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-3 h-4 w-4 text-gray-400 hover:text-gray-600"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="quick-role">Rol</Label>
+                      <Select value={formData.role} onValueChange={(value: "admin" | "agent" | "supervisor") => setFormData(prev => ({ ...prev, role: value }))}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="agent">Agente - Acceso limitado a procesos</SelectItem>
+                          <SelectItem value="supervisor">Supervisor - Acceso limitado a procesos</SelectItem>
+                          <SelectItem value="admin">Administrador - Acceso completo</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {message && (
+                    <Alert>
+                      <AlertDescription>{message}</AlertDescription>
+                    </Alert>
+                  )}
+
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? "Creando usuario..." : "Crear Usuario"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
       </div>
