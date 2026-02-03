@@ -156,7 +156,26 @@ export function TabsProvider({ children }: { children: ReactNode }) {
     const tab = tabs.find((t) => t.id === tabId)
     if (tab) {
       setActiveTabId(tabId)
-      router.push(tab.path)
+      
+      // Para dashboards, restaurar el estado guardado o ir al dashboard limpio
+      if (tab.type === "dashboard") {
+        const tabKey = `tab-state-${tabId}`
+        const savedState = localStorage.getItem(tabKey)
+        
+        if (savedState) {
+          const state = JSON.parse(savedState)
+          // Si hay un proceso guardado, navegar a él
+          if (state.currentProcess) {
+            router.push(state.currentProcess)
+          } else {
+            router.push(tab.path)
+          }
+        } else {
+          router.push(tab.path)
+        }
+      } else {
+        router.push(tab.path)
+      }
     }
   }
 
@@ -164,7 +183,21 @@ export function TabsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (tabs.length === 0) return
 
-    const currentTab = tabs.find((t) => t.path === pathname)
+    // Para dashboards, buscar por query parameter
+    let currentTab = null
+    if (pathname.startsWith("/dashboard")) {
+      const urlParams = new URLSearchParams(window.location.search)
+      const tabParam = urlParams.get('tab')
+      if (tabParam) {
+        currentTab = tabs.find((t) => t.id === tabParam)
+      }
+    }
+
+    // Si no se encuentra por query parameter, buscar por path exacto
+    if (!currentTab) {
+      currentTab = tabs.find((t) => t.path === pathname)
+    }
+    
     if (currentTab && currentTab.id !== activeTabId) {
       setActiveTabId(currentTab.id)
     }
