@@ -8,13 +8,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
-import { UserPlus, Eye, EyeOff } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { UserPlus, Eye, EyeOff, Edit } from "lucide-react"
 import { userStore, type User } from "@/lib/user-store"
 
 interface CreateUserData {
   name: string
   email: string
   password: string
+  role: "admin" | "agent" | "supervisor"
+  status: "active" | "inactive"
+}
+
+interface EditUserData {
+  name: string
+  email: string
+  password?: string
   role: "admin" | "agent" | "supervisor"
   status: "active" | "inactive"
 }
@@ -31,6 +40,15 @@ export default function CreateUserPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState("")
   const [createdUsers, setCreatedUsers] = useState<User[]>([])
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [showEditDialog, setShowEditDialog] = useState(false)
+  const [editFormData, setEditFormData] = useState<EditUserData>({
+    name: "",
+    email: "",
+    password: "",
+    role: "agent",
+    status: "active"
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -88,6 +106,90 @@ export default function CreateUserPage() {
       })
     } catch (error) {
       setMessage("Error al crear el usuario. Intenta de nuevo.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleEditUser = (user: User) => {
+    setEditingUser(user)
+    setEditFormData({
+      name: user.name,
+      email: user.email,
+      password: "",
+      role: user.role,
+      status: user.status
+    })
+    setShowEditDialog(true)
+  }
+
+  const handleUpdateUser = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setMessage("")
+
+    if (!editingUser) return
+
+    // Validación básica
+    if (!editFormData.name || !editFormData.email) {
+      setMessage("Por favor, completa todos los campos requeridos")
+      setIsLoading(false)
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(editFormData.email)) {
+      setMessage("Por favor, ingresa un correo electrónico válido")
+      setIsLoading(false)
+      return
+    }
+
+    if (editFormData.password && editFormData.password.length < 6) {
+      setMessage("La contraseña debe tener al menos 6 caracteres")
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      // Verificar si el email ya existe (y no es el mismo usuario)
+      const existingUser = userStore.getUserByEmail(editFormData.email)
+      if (existingUser && existingUser.id !== editingUser.id) {
+        setMessage("Ya existe un usuario con este correo electrónico")
+        setIsLoading(false)
+        return
+      }
+
+      // Actualizar usuario
+      const updates: Partial<Omit<User, 'id' | 'lastLogin' | 'passwordLastChanged'>> = {
+        name: editFormData.name,
+        email: editFormData.email,
+        role: editFormData.role,
+        status: editFormData.status
+      }
+
+      // Solo incluir contraseña si se proporcionó
+      if (editFormData.password) {
+        updates.password = editFormData.password
+      }
+
+      const updatedUser = userStore.updateUser(editingUser.id, updates)
+      
+      if (updatedUser) {
+        setMessage(`Usuario "${editFormData.name}" actualizado exitosamente`)
+        setShowEditDialog(false)
+        setEditingUser(null)
+        setEditFormData({
+          name: "",
+          email: "",
+          password: "",
+          role: "agent",
+          status: "active"
+        })
+      } else {
+        setMessage("Error al actualizar el usuario")
+      }
+    } catch (error) {
+      setMessage("Error al actualizar el usuario. Intenta de nuevo.")
     } finally {
       setIsLoading(false)
     }
@@ -217,7 +319,45 @@ export default function CreateUserPage() {
             </CardContent>
           </Card>
 
-          {/* Usuarios creados */}
+          {/* Usuarios existentes */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Usuarios Existentes</CardTitle>
+              <CardDescription>
+                Lista de usuarios en el sistema
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {userStore.getAllUsers().map((user) => {
+                  const userWithPassword = userStore.getUserByEmail(user.email)
+                  if (!userWithPassword) return null
+                  
+                  return (
+                    <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <div className="font-medium">{user.name}</div>
+                        <div className="text-sm text-gray-500">{user.email}</div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Badge className={getRoleBadgeColor(user.role)}>
+                          {getRoleLabel(user.role)}
+                        </Badge>
+                        <Badge className={user.status === "active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                          {user.status === "active" ? "Activo" : "Inactivo"}
+                        </Badge>
+                        <Button variant="outline" size="sm" onClick={() => handleEditUser(userWithPassword)}>
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Usuarios creados recientemente */}
           <Card>
             <CardHeader>
               <CardTitle>Usuarios Creados Recientemente</CardTitle>
@@ -378,6 +518,98 @@ export default function CreateUserPage() {
                 </form>
               </CardContent>
             </Card>
+
+            {/* Diálogo de edición de usuario */}
+            <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>Editar Usuario</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleUpdateUser} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="edit-name">Nombre Completo</Label>
+                      <Input
+                        id="edit-name"
+                        value={editFormData.name}
+                        onChange={(e) => setEditFormData(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="Juan Pérez"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-email">Correo Electrónico</Label>
+                      <Input
+                        id="edit-email"
+                        type="email"
+                        value={editFormData.email}
+                        onChange={(e) => setEditFormData(prev => ({ ...prev, email: e.target.value }))}
+                        placeholder="usuario@ejemplo.com"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="edit-password">Nueva Contraseña (dejar en blanco para mantener)</Label>
+                      <div className="relative">
+                        <Input
+                          id="edit-password"
+                          type={showPassword ? "text" : "password"}
+                          value={editFormData.password}
+                          onChange={(e) => setEditFormData(prev => ({ ...prev, password: e.target.value }))}
+                          placeholder="Mínimo 6 caracteres"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-3 h-4 w-4 text-gray-400 hover:text-gray-600"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-role">Rol</Label>
+                      <Select value={editFormData.role} onValueChange={(value: "admin" | "agent" | "supervisor") => setEditFormData(prev => ({ ...prev, role: value }))}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="agent">Agente - Acceso limitado a procesos</SelectItem>
+                          <SelectItem value="supervisor">Supervisor - Acceso limitado a procesos</SelectItem>
+                          <SelectItem value="admin">Administrador - Acceso completo</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="edit-status">Estado</Label>
+                    <Select value={editFormData.status} onValueChange={(value: "active" | "inactive") => setEditFormData(prev => ({ ...prev, status: value }))}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">Activo</SelectItem>
+                        <SelectItem value="inactive">Inactivo</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {message && (
+                    <Alert>
+                      <AlertDescription>{message}</AlertDescription>
+                    </Alert>
+                  )}
+
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? "Actualizando usuario..." : "Actualizar Usuario"}
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
           </CardContent>
         </Card>
       </div>

@@ -164,6 +164,21 @@ export const userStore = {
     return true
   },
 
+  // Update user
+  updateUser: (userId: string, updates: Partial<Omit<User, 'id' | 'lastLogin' | 'passwordLastChanged'>>) => {
+    const userIndex = users.findIndex((u) => u.id === userId)
+    if (userIndex === -1) return null
+
+    const updatedUser = {
+      ...users[userIndex],
+      ...updates,
+      passwordLastChanged: updates.password ? new Date().toISOString() : users[userIndex].passwordLastChanged,
+    }
+
+    users[userIndex] = updatedUser
+    return updatedUser
+  },
+
   // Delete user
   deleteUser: (userId: string) => {
     const userIndex = users.findIndex((u) => u.id === userId)
