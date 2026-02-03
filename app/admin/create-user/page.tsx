@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { UserPlus, Eye, EyeOff, Edit, Bug } from "lucide-react"
+import { UserPlus, Eye, EyeOff, Edit, Bug, Trash2 } from "lucide-react"
 import { userStore, type User } from "@/lib/user-store"
 
 interface CreateUserData {
@@ -140,6 +140,19 @@ export default function CreateUserPage() {
       status: user.status
     })
     setShowEditDialog(true)
+  }
+
+  const handleDeleteUser = (userId: string, userName: string) => {
+    if (confirm(`¿Estás seguro de eliminar al usuario "${userName}"? Esta acción no se puede deshacer.`)) {
+      const success = userStore.deleteUser(userId)
+      if (success) {
+        setMessage(`Usuario "${userName}" eliminado exitosamente`)
+        // Actualizar la lista de usuarios creados
+        setCreatedUsers(prev => prev.filter(u => u.id !== userId))
+      } else {
+        setMessage("Error al eliminar el usuario")
+      }
+    }
   }
 
   const handleUpdateUser = async (e: React.FormEvent) => {
@@ -390,6 +403,14 @@ export default function CreateUserPage() {
                         </Badge>
                         <Button variant="outline" size="sm" onClick={() => handleEditUser(userWithPassword)}>
                           <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => handleDeleteUser(user.id, user.name)}
+                          className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>

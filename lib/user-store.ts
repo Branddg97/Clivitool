@@ -103,6 +103,8 @@ const saveUsersToStorage = (users: User[]) => {
   if (typeof window !== 'undefined') {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(users))
+      // Also save to sessionStorage as Safari fallback
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(users))
     } catch (error) {
       console.error("Error guardando usuarios:", error)
     }
@@ -112,9 +114,18 @@ const saveUsersToStorage = (users: User[]) => {
 const loadUsersFromStorage = (): User[] => {
   if (typeof window !== 'undefined') {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
+      // Try localStorage first
+      let stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const parsed = JSON.parse(stored)
+        return parsed
+      }
+      
+      // Fallback to sessionStorage for Safari
+      stored = sessionStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        console.log("🔄 Usando sessionStorage fallback para Safari")
         return parsed
       }
     } catch (error) {
@@ -243,15 +254,15 @@ export const userStore = {
     console.log("Password ingresado:", password)
     console.log("Longitud password:", password.length)
     
-    // Force reload users array in Safari
-    if (typeof window !== 'undefined' && navigator.userAgent.includes('Safari')) {
-      const stored = localStorage.getItem(STORAGE_KEY)
+    // Force reload users array for Safari
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY)
       if (stored) {
         try {
           users = JSON.parse(stored)
-          console.log("🔄 Recargando usuarios para Safari:", users.length)
+          console.log("🔄 Recargando usuarios:", users.length)
         } catch (error) {
-          console.error("Error recargando Safari:", error)
+          console.error("Error recargando:", error)
         }
       }
     }
