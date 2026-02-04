@@ -18,12 +18,9 @@ import {
   LogOut,
   Settings,
   User,
-  Plus,
 } from "lucide-react"
 import Image from "next/image"
 import { useTabsSafe } from "@/components/tabs/tabs-manager"
-import { processCategories } from "@/lib/processes-data"
-import { LayoutDashboard, Search, FolderOpen } from "lucide-react"
 
 interface UserData {
   id: string
@@ -165,70 +162,6 @@ export function DashboardHeader() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Nueva Pestaña
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                className="w-56" 
-                align="end" 
-                onCloseAutoFocus={(e) => e.preventDefault()}
-                onInteractOutside={(e) => {
-                  // Permitir que el menú se cierre normalmente
-                }}
-              >
-                <DropdownMenuItem 
-                  onSelect={(e) => {
-                    e.preventDefault()
-                    handleOpenDashboard()
-                  }}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handleOpenDashboard()
-                  }}
-                >
-                  <LayoutDashboard className="mr-2 h-4 w-4" />
-                  <span>Dashboard</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onSelect={(e) => {
-                    e.preventDefault()
-                    handleOpenSearch()
-                  }}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handleOpenSearch()
-                  }}
-                >
-                  <Search className="mr-2 h-4 w-4" />
-                  <span>Búsqueda</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 uppercase">
-                  Categorías
-                </div>
-                {processCategories.slice(0, 6).map((category) => (
-                  <DropdownMenuItem
-                    key={category.id}
-                    onSelect={(e) => {
-                      e.preventDefault()
-                      handleOpenCategory(category.id, category.title)
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault()
-                      handleOpenCategory(category.id, category.title)
-                    }}
-                  >
-                    <FolderOpen className="mr-2 h-4 w-4" />
-                    <span className="truncate">{category.title}</span>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
             <Button variant="ghost" size="sm">
               <HelpCircle className="h-4 w-4 mr-2" />
               Ayuda
