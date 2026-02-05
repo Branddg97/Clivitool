@@ -21,6 +21,7 @@ interface TabsContextType {
   closeTab: (tabId: string) => void
   setActiveTab: (tabId: string) => void
   getTabTitle: (path: string) => string
+  updateTabTitle: (tabId: string, newTitle: string) => void
 }
 
 const TabsContext = createContext<TabsContextType | undefined>(undefined)
@@ -89,6 +90,10 @@ export function TabsProvider({ children }: { children: ReactNode }) {
         }
         localStorage.setItem(tabKey, JSON.stringify(currentTabState))
         
+        // Actualizar el título de la pestaña con el nombre del proceso
+        const processTitle = getTabTitle(tab.path)
+        updateTabTitle(activeTab.id, processTitle)
+        
         // Navegar en la misma pestaña dashboard
         router.push(tab.path)
         return
@@ -129,6 +134,15 @@ export function TabsProvider({ children }: { children: ReactNode }) {
     router.push(tab.path)
   }
 
+  // Actualizar título de una pestaña
+  const updateTabTitle = (tabId: string, newTitle: string) => {
+    setTabs((prev) => 
+      prev.map((tab) => 
+        tab.id === tabId ? { ...tab, title: newTitle } : tab
+      )
+    )
+  }
+
   // Cerrar una pestaña
   const closeTab = (tabId: string) => {
     setTabs((prev) => {
@@ -164,13 +178,17 @@ export function TabsProvider({ children }: { children: ReactNode }) {
         
         if (savedState) {
           const state = JSON.parse(savedState)
-          // Si hay un proceso guardado, navegar a él
+          // Si hay un proceso guardado, navegar a él y actualizar el título
           if (state.currentProcess) {
+            const processTitle = getTabTitle(state.currentProcess)
+            updateTabTitle(tabId, processTitle)
             router.push(state.currentProcess)
           } else {
+            updateTabTitle(tabId, "Dashboard")
             router.push(tab.path)
           }
         } else {
+          updateTabTitle(tabId, "Dashboard")
           router.push(tab.path)
         }
       } else {
@@ -303,6 +321,7 @@ export function TabsProvider({ children }: { children: ReactNode }) {
         closeTab,
         setActiveTab,
         getTabTitle,
+        updateTabTitle,
       }}
     >
       {children}
