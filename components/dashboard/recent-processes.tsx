@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Clock, ArrowRight, BarChart3 } from "lucide-react"
-import { processList, categoryNames } from "@/lib/processes-data"
+import { processList, processCategories } from "@/lib/processes-data"
 import { useTabs } from "@/components/tabs/tabs-manager"
 
 interface ProcessStat {
@@ -81,7 +81,8 @@ export function RecentProcesses() {
     for (const [categoryId, processes] of Object.entries(processList)) {
       const process = processes.find((p) => p.id === processId)
       if (process) {
-        return categoryNames[categoryId] || categoryId
+        const category = processCategories.find((c) => c.id === categoryId)
+        return category?.title || categoryId
       }
     }
     return "Sin categoría"

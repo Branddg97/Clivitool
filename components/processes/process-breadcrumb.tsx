@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { ChevronRight, Home } from "lucide-react"
-import { PROCESS_CATEGORIES } from "@/lib/processes-data"
+import { processCategories } from "@/lib/processes-data"
 
 interface ProcessBreadcrumbProps {
   category: string
@@ -8,7 +8,7 @@ interface ProcessBreadcrumbProps {
 }
 
 export function ProcessBreadcrumb({ category, processTitle }: ProcessBreadcrumbProps) {
-  const categoryInfo = PROCESS_CATEGORIES.find((c) => c.id === category)
+  const categoryInfo = processCategories.find((c) => c.id === category)
 
   return (
     <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
