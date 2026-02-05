@@ -14,13 +14,13 @@ interface WatermarkProps {
 }
 
 export function Watermark({ 
-  src = "/images/clivi-logo.png", 
-  alt = "Clivi Watermark",
-  opacity = 0.1,
-  size = 80,
+  src = "/images/custom-logo.webp", 
+  alt = "EvolveCX Watermark",
+  opacity = 0.15,
+  size = 100,
   position = 'bottom-right',
   className = "",
-  grayscale = true
+  grayscale = false
 }: WatermarkProps) {
   const getPositionClasses = () => {
     switch (position) {
