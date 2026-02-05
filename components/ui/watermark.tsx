@@ -16,7 +16,7 @@ interface WatermarkProps {
 export function Watermark({ 
   src = "/images/custom-logo.png", 
   alt = "EvolveCX Watermark",
-  opacity = 0.3,
+  opacity = 1,
   size = 120,
   position = 'bottom-right',
   className = "",
@@ -45,7 +45,7 @@ export function Watermark({
       <div 
         className="rounded-lg p-2"
         style={{
-          backgroundColor: 'rgba(209, 213, 219, 0.5)',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
         }}
       >
         <Image
