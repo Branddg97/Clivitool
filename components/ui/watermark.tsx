@@ -14,9 +14,9 @@ interface WatermarkProps {
 }
 
 export function Watermark({ 
-  src = "/images/custom-logo.webp", 
+  src = "/images/custom-logo.png", 
   alt = "EvolveCX Watermark",
-  opacity = 0.2,
+  opacity = 0.08,
   size = 120,
   position = 'bottom-right',
   className = "",
@@ -42,17 +42,24 @@ export function Watermark({
       className={`fixed pointer-events-none z-50 ${getPositionClasses()} ${className}`}
       style={{ opacity }}
     >
-      <Image
-        src={src}
-        alt={alt}
-        width={size}
-        height={size}
-        className="object-contain"
+      <div 
+        className="rounded-lg p-2 bg-gray-300/50 backdrop-blur-sm"
         style={{
-          filter: grayscale ? 'grayscale(100%)' : 'none',
+          backgroundColor: 'rgba(209, 213, 219, 0.5)', // gray-300 con 50% opacidad
         }}
-        priority={false}
-      />
+      >
+        <Image
+          src={src}
+          alt={alt}
+          width={size}
+          height={size}
+          className="object-contain"
+          style={{
+            filter: grayscale ? 'grayscale(100%)' : 'none',
+          }}
+          priority={false}
+        />
+      </div>
     </div>
   )
 }
