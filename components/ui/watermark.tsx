@@ -17,7 +17,7 @@ export function Watermark({
   src = "/images/custom-logo.png", 
   alt = "EvolveCX Watermark",
   opacity = 1,
-  size = 120,
+  size = 80,
   position = 'bottom-right',
   className = "",
   grayscale = false
