@@ -329,6 +329,15 @@ export function ConditionalTabsHeader() {
 export function TabsHeader() {
   const { tabs, activeTabId, closeTab, setActiveTab, openTab } = useTabs()
 
+  // Obtener título del proceso (mover aquí para que esté disponible)
+  const getProcessTitle = (processId: string): string => {
+    for (const category of Object.values(processList)) {
+      const process = category.find((p) => p.id === processId)
+      if (process) return process.title
+    }
+    return "Proceso"
+  }
+
   const openNewTab = () => {
     // Limitar a máximo 5 pestañas
     if (tabs.length >= 5) {
@@ -340,8 +349,27 @@ export function TabsHeader() {
     const dashboardNumber = tabs.filter(t => t.type === "dashboard").length + 1
     const uniqueId = `dashboard-${Date.now()}`
     
+    // Determinar el título basado en el estado guardado
+    let tabTitle = `Dashboard ${dashboardNumber}`
+    
+    // Si hay un proceso guardado, usar el nombre del proceso
+    if (activeTabId) {
+      const activeTab = tabs.find(t => t.id === activeTabId)
+      if (activeTab && activeTab.type === "dashboard") {
+        const tabKey = `tab-state-${activeTab.id}`
+        const savedState = localStorage.getItem(tabKey)
+        if (savedState) {
+          const state = JSON.parse(savedState)
+          if (state.currentProcess && state.currentProcess.startsWith("/process/")) {
+            const processId = state.currentProcess.split("/process/")[1]
+            tabTitle = getProcessTitle(processId)
+          }
+        }
+      }
+    }
+    
     openTab({
-      title: `Dashboard ${dashboardNumber}`,
+      title: tabTitle,
       path: `/dashboard?tab=${uniqueId}`, // Usar query param para diferenciar
       type: "dashboard",
     })
