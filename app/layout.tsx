@@ -5,6 +5,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { TabsProvider, ConditionalTabsHeader } from "@/components/tabs/tabs-manager"
+import { Watermark } from "@/components/ui/watermark"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -28,6 +29,7 @@ export default function RootLayout({
             {children}
           </TabsProvider>
           <Toaster />
+          <Watermark />
         </ThemeProvider>
       </body>
     </html>
