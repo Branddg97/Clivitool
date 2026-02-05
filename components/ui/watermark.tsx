@@ -16,8 +16,8 @@ interface WatermarkProps {
 export function Watermark({ 
   src = "/images/custom-logo.webp", 
   alt = "EvolveCX Watermark",
-  opacity = 0.15,
-  size = 100,
+  opacity = 0.2,
+  size = 120,
   position = 'bottom-right',
   className = "",
   grayscale = false
