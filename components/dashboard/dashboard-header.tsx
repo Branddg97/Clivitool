@@ -21,6 +21,7 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { useTabsSafe } from "@/components/tabs/tabs-manager"
+import { SyncButton } from "@/components/sync-button"
 
 interface UserData {
   id: string
@@ -164,6 +165,8 @@ export function DashboardHeader() {
           </div>
 
           <div className="flex items-center space-x-4">
+            <SyncButton />
+            
             <Button variant="ghost" size="sm">
               <HelpCircle className="h-4 w-4 mr-2" />
               Ayuda
