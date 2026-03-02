@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Search, Clock, TrendingUp } from "lucide-react"
-import { processList, recentProcesses } from "@/lib/processes-updated"
+import { processList, recentProcesses } from "@/lib/processes-data"
 
 export function QuickSearch() {
   const router = useRouter()

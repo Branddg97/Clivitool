@@ -39,7 +39,7 @@ export interface ProcessCategory {
   href: string
 }
 
-// Categorías de procesos de Clivi
+// Categorías de procesos de Clivi - ACTUALIZADO
 export const processCategories: ProcessCategory[] = [
   {
     id: "cancelacion",

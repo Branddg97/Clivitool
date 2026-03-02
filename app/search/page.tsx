@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Search, ArrowLeft, FileText } from "lucide-react"
-import { processList, type Process } from "@/lib/processes-updated"
+import { processList, type Process } from "@/lib/processes-data"
 import Link from "next/link"
 
 export default function SearchPage() {

@@ -11,7 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Plus, Edit, Trash2, Eye, EyeOff, Save } from "lucide-react"
-import { processCategories, processList, type Process, type ProcessCategory } from "@/lib/processes-updated"
+import { processCategories, processList, type Process, type ProcessCategory } from "@/lib/processes-data"
 
 interface ProcessFormData {
   id: string

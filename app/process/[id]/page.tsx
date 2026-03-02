@@ -1,6 +1,6 @@
 import { DecisionTree } from "@/components/process/decision-tree"
 import { ProcessHeader } from "@/components/process/process-header"
-import { processList } from "@/lib/processes-updated"
+import { processList } from "@/lib/processes-data"
 
 interface ProcessPageProps {
   params: {

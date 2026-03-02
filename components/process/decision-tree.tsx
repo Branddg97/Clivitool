@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CheckCircle, ArrowRight, ArrowLeft, AlertTriangle, Info, Clock, User, FileText } from "lucide-react"
-import { processSteps, processList } from "@/lib/processes-updated"
+import { processSteps, processList } from "@/lib/processes-data"
 
 interface DecisionTreeProps {
   processId: string

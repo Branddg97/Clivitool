@@ -1,6 +1,6 @@
 import { ProcessList } from "@/components/processes/process-list"
 import { ProcessBreadcrumb } from "@/components/processes/process-breadcrumb"
-import { processCategories } from "@/lib/processes-updated"
+import { processCategories } from "@/lib/processes-data"
 
 interface ProcessCategoryPageProps {
   params: {

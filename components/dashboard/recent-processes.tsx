@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Clock, ArrowRight, BarChart3 } from "lucide-react"
-import { processList, processCategories } from "@/lib/processes-updated"
+import { processList, processCategories } from "@/lib/processes-data"
 import { useTabs } from "@/components/tabs/tabs-manager"
 
 interface ProcessStat {
