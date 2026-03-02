@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Search, Clock, TrendingUp } from "lucide-react"
-import { processList, recentProcesses } from "@/lib/processes-data"
+import { processList } from "@/lib/processes-data"
 
 export function QuickSearch() {
   const router = useRouter()
@@ -18,15 +18,19 @@ export function QuickSearch() {
 
   // Obtener todos los procesos para búsquedas populares
   const allProcesses = useMemo(() => {
+    if (!processList) return []
+    
     const processes: Array<{ id: string; title: string; usage: number }> = []
     Object.values(processList).forEach((categoryProcesses) => {
-      categoryProcesses.forEach((process) => {
-        processes.push({
-          id: process.id,
-          title: process.title,
-          usage: process.usage,
+      if (categoryProcesses && Array.isArray(categoryProcesses)) {
+        categoryProcesses.forEach((process) => {
+          processes.push({
+            id: process.id,
+            title: process.title,
+            usage: process.usage,
+          })
         })
-      })
+      }
     })
     return processes
   }, [])
@@ -39,9 +43,9 @@ export function QuickSearch() {
       .map((process) => process.title)
   }, [allProcesses])
 
-  // Búsquedas recientes: títulos de los procesos recientes
+  // Búsquedas recentes: usar array vacío por ahora
   const recentSearches = useMemo(() => {
-    return recentProcesses.map((process) => process.title)
+    return []
   }, [])
 
   const handleSearch = async (query: string) => {
