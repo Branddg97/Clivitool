@@ -57,19 +57,9 @@ export const processCategories: ProcessCategory[] = [
     description: "Proceso de envío de medicamentos y gestión de entregas",
     icon: "Truck",
     color: "bg-green-500",
-    processes: 3,
-    avgTime: "10-15 min",
-    href: "/processes/supplies",
-  },
-  {
-    id: "pagos",
-    title: "Pagos",
-    description: "Gestión de pagos, cambios de fecha y adelantos",
-    icon: "CreditCard",
-    color: "bg-purple-500",
     processes: 2,
     avgTime: "10-15 min",
-    href: "/processes/pagos",
+    href: "/processes/supplies",
   },
   {
     id: "citas",
@@ -77,7 +67,7 @@ export const processCategories: ProcessCategory[] = [
     description: "Agendamiento de citas y seguimiento de pacientes",
     icon: "Calendar",
     color: "bg-blue-500",
-    processes: 2,
+    processes: 1,
     avgTime: "10-20 min",
     href: "/processes/citas",
   },
@@ -99,7 +89,7 @@ export const processList: Record<string, Process[]> = {
     {
       id: "proc-cancelacion",
       title: "Cancelación",
-      description: "Proceso para dar seguimiento o gestiónar la cancelación del paciente, incluyendo contención, retención y escalaciones según el nivel de molestia.",
+      description: "Proceso para dar seguimiento o gestionar la cancelación del paciente, incluyendo contención, retención y escalaciones según el nivel de molestia.",
       category: "cancelacion",
       steps: 4,
       avgTime: "15-20 min",
@@ -130,55 +120,9 @@ export const processList: Record<string, Process[]> = {
       difficulty: "Difícil",
       usage: 78,
       lastUpdated: "Hoy"
-    },
-    {
-      id: "proc-medicamento-danado",
-      title: "Medicamento Dañado",
-      description: "Proceso para identificar el daño en medicamento y solicitar evidencia para proceder con soporte.",
-      category: "supplies",
-      steps: 2,
-      avgTime: "10-15 min",
-      difficulty: "Fácil",
-      usage: 45,
-      lastUpdated: "Hoy"
-    }
-  ],
-  pagos: [
-    {
-      id: "proc-cambio-fecha-pago",
-      title: "Cambio de Fecha de Pago",
-      description: "Proceso para validar pagos en Chargebee, confirmar nueva fecha, crear guía práctica y escalar si es urgente o el paciente está molesto.",
-      category: "pagos",
-      steps: 4,
-      avgTime: "10-15 min",
-      difficulty: "Medio",
-      usage: 134,
-      lastUpdated: "Hoy"
-    },
-    {
-      id: "proc-adelanto-pago",
-      title: "Adelanto de Pago (por envío de medicamento)",
-      description: "Proceso para adelantar 1 pago, validarlo en Chargebee, crear guía práctica y resolver según pago exitoso/fallido, incluyendo actualización de método de pago y escalación.",
-      category: "pagos",
-      steps: 4,
-      avgTime: "15-25 min",
-      difficulty: "Difícil",
-      usage: 98,
-      lastUpdated: "Hoy"
     }
   ],
   citas: [
-    {
-      id: "proc-paciente-sin-cita-segundo-pago",
-      title: "Paciente sin cita con segundo pago próximo",
-      description: "Proceso para pacientes con segundo pago próximo sin cita, diferenciando primera vez vs subsecuente, validando labs, plan, motivo de cita y escalación a salud o adherencia.",
-      category: "citas",
-      steps: 2,
-      avgTime: "20-35 min",
-      difficulty: "Difícil",
-      usage: 87,
-      lastUpdated: "Hoy"
-    },
     {
       id: "proc-agendamiento-citas",
       title: "Agendamiento de Citas",
@@ -216,6 +160,30 @@ export const processSteps: Record<string, ProcessStep[]> = {
       type: "question",
       content: "¿El paciente se comunica para cancelar o para dar seguimiento a su cancelación?",
       estimatedTime: "1 minuto"
+    },
+    {
+      id: "step-2",
+      title: "Seguimiento",
+      description: "Validar Churn y agendar seguimiento",
+      type: "action",
+      content: "Validar que tenga un Churn para cancelación y quién lo tiene asignado. Pedir al paciente un día para agendar y un rango de horario.",
+      estimatedTime: "3 minutos"
+    },
+    {
+      id: "step-3",
+      title: "Cancelar",
+      description: "Proceso de cancelación con contención",
+      type: "action",
+      content: "Preguntar motivo de cancelación, clasificar motivo y aplicar retención según corresponda.",
+      estimatedTime: "5 minutos"
+    },
+    {
+      id: "step-4",
+      title: "Decisión Final",
+      description: "Confirmar si el paciente quiere cancelar definitivamente",
+      type: "question",
+      content: "¿El paciente quiere cancelar definitivamente?",
+      estimatedTime: "2 minutos"
     }
   ],
   "proc-envio-medicamento": [
@@ -226,6 +194,22 @@ export const processSteps: Record<string, ProcessStep[]> = {
       type: "question",
       content: "¿Es envío de primera vez?",
       estimatedTime: "1 minuto"
+    },
+    {
+      id: "step-2",
+      title: "Validar en Admin",
+      description: "Revisar Delivery Status y validar envío",
+      type: "info",
+      content: "Validar en Admin > Feed > Delivery > Detalles de la orden > Historial",
+      estimatedTime: "3 minutos"
+    },
+    {
+      id: "step-3",
+      title: "Compartir tracking",
+      description: "Proporcionar liga de rastreo y tiempos",
+      type: "action",
+      content: "Compartir liga de rastreo y mencionar que tarda 5 a 7 días hábiles",
+      estimatedTime: "2 minutos"
     }
   ],
   "proc-error-direccion-entrega": [
@@ -236,54 +220,30 @@ export const processSteps: Record<string, ProcessStep[]> = {
       type: "question",
       content: "¿Por qué necesita cambiar la dirección de entrega?",
       estimatedTime: "2 minutos"
-    }
-  ],
-  "proc-medicamento-danado": [
-    {
-      id: "step-1",
-      title: "Identificar daño",
-      description: "Preguntar en qué aspecto está dañado el medicamento",
-      type: "question",
-      content: "¿En qué aspecto está dañado el medicamento?",
-      estimatedTime: "1 minuto"
     },
     {
       id: "step-2",
-      title: "Solicitar evidencia",
-      description: "Pedir video o foto del daño",
-      type: "action",
-      content: "Por favor, envíe una foto o video corto mostrando el daño del medicamento",
-      estimatedTime: "2 minutos"
-    }
-  ],
-  "proc-cambio-fecha-pago": [
-    {
-      id: "step-1",
-      title: "Validar pagos",
-      description: "Revisar Chargebee para validar fechas de pago",
+      title: "Revisar direcciones",
+      description: "Validar dirección registrada y de envío",
       type: "info",
-      content: "Validar en Chargebee: revisar fechas de pago y validar que no tenga adeudo.",
+      content: "Revisar dirección registrada en Admin: Perfil > Home y dirección de la guía de rastreo",
       estimatedTime: "3 minutos"
-    }
-  ],
-  "proc-adelanto-pago": [
+    },
     {
-      id: "step-1",
-      title: "Indagar motivo",
-      description: "Investigar por qué se está adelantando el pago",
-      type: "question",
-      content: "¿Por qué necesita adelantar el pago?",
-      estimatedTime: "2 minutos"
-    }
-  ],
-  "proc-paciente-sin-cita-segundo-pago": [
+      id: "step-3",
+      title: "Contactar paciente",
+      description: "Llamar para confirmar dirección",
+      type: "action",
+      content: "Realizar llamada al paciente para confirmar dirección (3 intentos cada 5 minutos)",
+      estimatedTime: "10 minutos"
+    },
     {
-      id: "step-1",
-      title: "Validar tipo de paciente",
-      description: "Determinar si es primera vez o subsecuente",
-      type: "question",
-      content: "¿El paciente es de primera vez?",
-      estimatedTime: "1 minuto"
+      id: "step-4",
+      title: "Validar cobertura",
+      description: "Confirmar cobertura por CP",
+      type: "validation",
+      content: "Validar cobertura en Looker Studio usando el CP (verde=si aplica, rojo=no aplica)",
+      estimatedTime: "3 minutos"
     }
   ],
   "proc-agendamiento-citas": [
@@ -300,8 +260,16 @@ export const processSteps: Record<string, ProcessStep[]> = {
       title: "Identificar tipo de paciente",
       description: "Clasificar al paciente según complejidad",
       type: "info",
-      content: "Paciente Simple: Medicina General. Paciente Complejo: médicos especialistas. Diabetes: endocrinólogos.",
+      content: "Paciente Simple: Medicina General (Diana, Gabrielle, Ma. Fernanda). Paciente Complejo: médicos especialistas. Diabetes: endocrinólogos.",
       estimatedTime: "1 minuto"
+    },
+    {
+      id: "step-3",
+      title: "Validar plan",
+      description: "Confirmar plan mensual y disponibilidad",
+      type: "validation",
+      content: "Validar si tiene plan mensual (citas cada mes) y disponibilidad médica",
+      estimatedTime: "3 minutos"
     }
   ],
   "proc-prueba": [

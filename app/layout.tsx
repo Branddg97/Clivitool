@@ -29,7 +29,6 @@ export default function RootLayout({
             {children}
           </TabsProvider>
           <Toaster />
-          <Watermark />
         </ThemeProvider>
       </body>
     </html>
