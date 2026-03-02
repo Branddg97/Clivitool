@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { ChevronRight, Home } from "lucide-react"
-import { processCategories } from "@/lib/processes-data"
+import { processCategories } from "@/lib/processes-updated"
 
 interface ProcessBreadcrumbProps {
   category: string

@@ -17,7 +17,7 @@ import {
   ShoppingCart,
   TrendingUp,
 } from "lucide-react"
-import { processCategories } from "@/lib/processes-data"
+import { processCategories } from "@/lib/processes-updated"
 import { useTabs } from "@/components/tabs/tabs-manager"
 
 const iconMap: Record<string, any> = {

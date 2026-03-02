@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ChevronLeft, Clock, CheckCircle, AlertCircle } from "lucide-react"
-import { processList } from "@/lib/processes-data"
+import { processList } from "@/lib/processes-updated"
 
 interface ProcessHeaderProps {
   processId: string

@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Search, FileText, Clock, TrendingUp } from "lucide-react"
-import { processCategories, processList } from "@/lib/processes-data"
+import { processCategories, processList } from "@/lib/processes-updated"
 import { useTabs } from "@/components/tabs/tabs-manager"
 
 interface ProcessListProps {

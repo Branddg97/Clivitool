@@ -4,7 +4,7 @@ import { useState, useEffect, createContext, useContext, ReactNode } from "react
 import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
-import { processList } from "@/lib/processes-data"
+import { processList } from "@/lib/processes-updated"
 
 interface Tab {
   id: string
