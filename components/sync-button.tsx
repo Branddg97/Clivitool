@@ -31,8 +31,8 @@ export function SyncButton({ onSyncComplete }: SyncButtonProps) {
       const data = await response.json()
       setSyncStatus('success')
       
-      // Guardar en localStorage
-      localStorage.setItem('processes-data', JSON.stringify(data))
+      // Guardar en localStorage (temporalmente deshabilitado)
+      // localStorage.setItem('processes-data', JSON.stringify(data))
       
       // Recargar la página para aplicar cambios
       setTimeout(() => {
