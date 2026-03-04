@@ -24,12 +24,23 @@ export function DecisionTree({ processId }: DecisionTreeProps) {
   const steps = processSteps[processId] || []
   const currentStep = steps[currentStepIndex]
 
+  // Un paso es final si no tiene nextStep ni opciones (independientemente de su posición)
+  const isLastStep = !currentStep.nextStep && !currentStep.options
+
   // Debug: verificar qué proceso y pasos se están cargando
   console.log('DecisionTree Debug:', { 
     processId, 
     availableProcessIds: Object.keys(processSteps),
     stepsCount: steps.length,
-    hasSteps: steps.length > 0
+    hasSteps: steps.length > 0,
+    currentStep: currentStep,
+    hasOptions: !!currentStep?.options,
+    hasNextStep: !!currentStep?.nextStep,
+    isLastStep: isLastStep,
+    stepIndex: currentStepIndex,
+    // Verificar si el botón debería mostrarse
+    shouldShowNextButton: !currentStep?.options,
+    buttonType: !currentStep?.options ? (isLastStep ? 'Finalizar' : 'Siguiente') : 'Opciones'
   })
 
   useEffect(() => {
