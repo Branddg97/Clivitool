@@ -1,4 +1,4 @@
-import { DecisionTree } from "@/components/process/decision-tree"
+import { DecisionTreeV2 } from "@/components/process/decision-tree-v2"
 import { ProcessHeader } from "@/components/process/process-header"
 import { processList } from "@/lib/processes-data"
 
@@ -27,7 +27,7 @@ export default function ProcessPage({ params }: ProcessPageProps) {
     <div className="min-h-screen bg-gray-50">
       <ProcessHeader processId={params.id} />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <DecisionTree processId={params.id} />
+        <DecisionTreeV2 processId={params.id} />
       </main>
     </div>
   )
