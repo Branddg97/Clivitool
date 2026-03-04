@@ -1,3 +1,155 @@
+export interface ProcessStep {
+  id: string
+  title: string
+  description: string
+  type: "info" | "question" | "action" | "validation"
+  content: string
+  options?: {
+    id: string
+    label: string
+    nextStep?: string
+    action?: string
+  }[]
+  nextStep?: string
+  warning?: string
+  tip?: string
+  estimatedTime?: string
+}
+
+export interface Process {
+  id: string
+  title: string
+  description: string
+  category: string
+  steps: number
+  avgTime: string
+  difficulty: "Fácil" | "Medio" | "Difícil"
+  usage: number
+  lastUpdated: string
+}
+
+export interface ProcessCategory {
+  id: string
+  title: string
+  description: string
+  icon: string
+  color: string
+  processes: number
+  avgTime: string
+  href: string
+}
+
+// Categorías de procesos de Clivi
+export const processCategories: ProcessCategory[] = [
+  {
+    id: "cancelacion",
+    title: "Cancelación",
+    description: "Proceso de cancelación de pacientes y retención",
+    icon: "UserMinus",
+    color: "bg-red-500",
+    processes: 1,
+    avgTime: "15-20 min",
+    href: "/processes/cancelacion",
+  },
+  {
+    id: "supplies",
+    title: "Supplies",
+    description: "Proceso de envío de medicamentos y gestión de entregas",
+    icon: "Truck",
+    color: "bg-green-500",
+    processes: 2,
+    avgTime: "10-15 min",
+    href: "/processes/supplies",
+  },
+  {
+    id: "citas",
+    title: "Citas",
+    description: "Proceso de agendamiento y seguimiento de citas médicas",
+    icon: "Calendar",
+    color: "bg-blue-500",
+    processes: 1,
+    avgTime: "10-20 min",
+    href: "/processes/citas",
+  },
+  {
+    id: "cuentas",
+    title: "Cuentas",
+    description: "Proceso de gestión de cuentas y acceso al sistema",
+    icon: "User",
+    color: "bg-purple-500",
+    processes: 1,
+    avgTime: "5-8 min",
+    href: "/processes/cuentas",
+  }
+]
+
+// Lista de procesos por categoría
+export const processList: Record<string, Process[]> = {
+  cancelacion: [
+    {
+      id: "proc-cancelacion",
+      title: "Cancelación",
+      description: "Proceso para dar seguimiento o gestionar la cancelación del paciente, incluyendo contención, retención y escalaciones según el nivel de molestia.",
+      category: "cancelacion",
+      steps: 9,
+      avgTime: "15-20 min",
+      difficulty: "Difícil",
+      usage: 89,
+      lastUpdated: "Hoy"
+    }
+  ],
+  supplies: [
+    {
+      id: "proc-envio-medicamento",
+      title: "Envío de Medicamento",
+      description: "Proceso para validar y dar seguimiento al envío del medicamento, ya sea de primera vez o subsecuente, incluyendo validación en Admin/Chargebee y comunicación de tracking.",
+      category: "supplies",
+      steps: 3,
+      avgTime: "10-15 min",
+      difficulty: "Medio",
+      usage: 156,
+      lastUpdated: "Hoy"
+    },
+    {
+      id: "proc-error-direccion-entrega",
+      title: "Error en la Dirección de Entrega",
+      description: "Proceso para validar, corregir y confirmar dirección de entrega, incluyendo validación de cobertura por CP, cambios en Admin y escalación a Supplies.",
+      category: "supplies",
+      steps: 5,
+      avgTime: "15-25 min",
+      difficulty: "Difícil",
+      usage: 78,
+      lastUpdated: "Hoy"
+    }
+  ],
+  citas: [
+    {
+      id: "proc-agendamiento-citas",
+      title: "Agendamiento de Citas",
+      description: "Proceso para agendar citas Long/Short según tipo de cita, plan y complejidad del paciente, incluyendo reglas críticas de asignación médica.",
+      category: "citas",
+      steps: 2,
+      avgTime: "10-20 min",
+      difficulty: "Medio",
+      usage: 145,
+      lastUpdated: "Hoy"
+    }
+  ],
+  cuentas: [
+    {
+      id: "proc-prueba",
+      title: "Restablecimiento de Contraseña",
+      description: "Proceso para validar identidad del usuario y ejecutar el restablecimiento de contraseña en el sistema, incluyendo verificación de seguridad y confirmación final.",
+      category: "cuentas",
+      steps: 5,
+      avgTime: "5-8 min",
+      difficulty: "Fácil",
+      usage: 25,
+      lastUpdated: "Hoy"
+    }
+  ]
+}
+
 // Pasos detallados de cada proceso desde el CSV
 export const processSteps: Record<string, ProcessStep[]> = {
   "proc-cancelacion": [
