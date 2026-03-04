@@ -159,7 +159,19 @@ export const processSteps: Record<string, ProcessStep[]> = {
       description: "Determinar si el paciente se comunica para cancelar o para dar seguimiento a su cancelación",
       type: "question",
       content: "¿El paciente se comunica para cancelar o para dar seguimiento a su cancelación?",
-      estimatedTime: "1 minuto"
+      estimatedTime: "1 minuto",
+      options: [
+        {
+          id: "opt-cancelar",
+          label: "Quiere cancelar",
+          nextStep: "step-3"
+        },
+        {
+          id: "opt-seguimiento",
+          label: "Es seguimiento",
+          nextStep: "step-2"
+        }
+      ]
     },
     {
       id: "step-2",
@@ -193,7 +205,19 @@ export const processSteps: Record<string, ProcessStep[]> = {
       description: "Determinar si es primera vez o subsecuente",
       type: "question",
       content: "¿Es envío de primera vez?",
-      estimatedTime: "1 minuto"
+      estimatedTime: "1 minuto",
+      options: [
+        {
+          id: "opt-primera-vez",
+          label: "Primera vez",
+          nextStep: "step-2"
+        },
+        {
+          id: "opt-subsecuente",
+          label: "Subsecuente",
+          nextStep: "step-2"
+        }
+      ]
     },
     {
       id: "step-2",
@@ -219,7 +243,24 @@ export const processSteps: Record<string, ProcessStep[]> = {
       description: "Investigar por qué necesita cambiar la dirección",
       type: "question",
       content: "¿Por qué necesita cambiar la dirección de entrega?",
-      estimatedTime: "2 minutos"
+      estimatedTime: "2 minutos",
+      options: [
+        {
+          id: "opt-error-sistema",
+          label: "Error en el sistema",
+          nextStep: "step-2"
+        },
+        {
+          id: "opt-cambio-domicilio",
+          label: "Cambio de domicilio",
+          nextStep: "step-2"
+        },
+        {
+          id: "opt-otro",
+          label: "Otro motivo",
+          nextStep: "step-2"
+        }
+      ]
     },
     {
       id: "step-2",
@@ -279,7 +320,19 @@ export const processSteps: Record<string, ProcessStep[]> = {
       description: "Verificar si el usuario tiene acceso al correo registrado",
       type: "question",
       content: "¿El usuario tiene acceso al correo electrónico registrado en el sistema?",
-      estimatedTime: "1 minuto"
+      estimatedTime: "1 minuto",
+      options: [
+        {
+          id: "opt-si-acceso",
+          label: "Sí tiene acceso",
+          nextStep: "step-2"
+        },
+        {
+          id: "opt-no-acceso",
+          label: "No tiene acceso",
+          nextStep: "step-2"
+        }
+      ]
     },
     {
       id: "step-2",
