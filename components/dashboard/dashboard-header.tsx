@@ -18,6 +18,7 @@ import {
   LogOut,
   Settings,
   User,
+  Upload,
 } from "lucide-react"
 import Image from "next/image"
 import { useTabsSafe } from "@/components/tabs/tabs-manager"
@@ -164,6 +165,16 @@ export function DashboardHeader() {
           </div>
 
           <div className="flex items-center space-x-4">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => (window.location.href = "/upload-csv")}
+              className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              Subir CSV
+            </Button>
+
             <Button variant="ghost" size="sm">
               <HelpCircle className="h-4 w-4 mr-2" />
               Ayuda
