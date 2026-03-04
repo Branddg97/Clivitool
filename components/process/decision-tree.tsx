@@ -24,6 +24,14 @@ export function DecisionTree({ processId }: DecisionTreeProps) {
   const steps = processSteps[processId] || []
   const currentStep = steps[currentStepIndex]
 
+  // Debug: verificar qué proceso y pasos se están cargando
+  console.log('DecisionTree Debug:', { 
+    processId, 
+    availableProcessIds: Object.keys(processSteps),
+    stepsCount: steps.length,
+    hasSteps: steps.length > 0
+  })
+
   useEffect(() => {
     setStartTime(new Date())
   }, [])
