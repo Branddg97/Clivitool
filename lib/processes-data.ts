@@ -1,7 +1,5 @@
-import { ProcessStep, Process, ProcessCategory } from "./processes-data"
-
 // Pasos detallados de cada proceso desde el CSV
-export const processStepsFromCSV: Record<string, ProcessStep[]> = {
+export const processSteps: Record<string, ProcessStep[]> = {
   "proc-cancelacion": [
     {
       id: "step-1",
