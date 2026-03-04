@@ -169,10 +169,10 @@ export function DashboardHeader() {
               variant="outline" 
               size="sm" 
               onClick={() => (window.location.href = "/upload-csv")}
-              className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
+              className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100 font-semibold"
             >
               <Upload className="h-4 w-4 mr-2" />
-              Subir CSV
+              📁 Subir CSV
             </Button>
 
             <Button variant="ghost" size="sm">
