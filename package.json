@@ -3,7 +3,8 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "npm run validate && next build",
+    "validate": "node scripts/validate-processes.js",
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start"
