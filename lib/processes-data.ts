@@ -201,36 +201,51 @@ export const processSteps: Record<string, ProcessStep[]> = {
     {
       id: "step-1",
       title: "¿El paciente se comunica para cancelar o para dar seguimiento a su cancelación?",
-      description: "Identificar el motivo principal de la comunicación",
+      description: "Identificar el motivo principal del contacto",
       type: "question",
-      content: "Preguntar si el paciente está llamando para cancelar o para dar seguimiento a una cancelación previa.",
-      options: [
-        { id: "seguimiento", label: "Seguimiento", nextStep: "step-seguimiento" },
-        { id: "cancelar", label: "Cancelar", nextStep: "step-cancelar" }
-      ],
+      content: "Confirma si el paciente está llamando para cancelar o para dar seguimiento a una cancelación previa.",
       estimatedTime: "1 minuto",
+      options: [
+        {
+          id: "seguimiento",
+          label: "Seguimiento",
+          nextStep: "step-seguimiento"
+        },
+        {
+          id: "cancelar",
+          label: "Cancelar",
+          nextStep: "step-motivo"
+        }
+      ]
     },
     {
       id: "step-seguimiento",
-      title: "Proceso de Seguimiento",
-      description: "Gestionar seguimiento de cancelación",
+      title: "Gestión de Seguimiento",
+      description: "Gestionar seguimiento de cancelación existente",
       type: "action",
-      content: "Paso 1: Validar que tenga un Churn para cancelación y quien lo tiene Asignado.\n\nPaso 2: Pedir al paciente un día para agendar y un rango de horario.\n\nPaso 3: Validar horarios disponibles con el paciente de acuerdo al calendario que visualizamos, confirmar horario con el paciente.\n\nPaso 4: Seleccionar el horario y llenar los campos de Nombre y Apellido con los datos del PX.\n\nPaso 5: En el campo de correo electrónico poner el correo del paciente registrado con Clivi.\n\nPaso 6: Mencionar al paciente el horario en el que le estarían marcando, confirmar que la información sea clara.\n\nPaso 7: Marcar como Resuelto",
+      content: `Paso 1: Validar que exista Churn de cancelación y responsable asignado.
+Paso 2: Solicitar día y rango de horario al paciente.
+Paso 3: Validar horarios disponibles con el paciente según calendario visualizado.
+Paso 4: Seleccionar horario y llenar datos de Nombre y Apellido en PX.
+Paso 5: En campo de correo electrónico, colocar correo del paciente registrado con Clivi.
+Paso 6: Mencionar al paciente el horario en que le estarían marcando.
+Paso 7: Marcar como Resuelto.`,
       nextStep: "step-completado",
-      tip: "Validar siempre que el churn esté asignado antes de agendar",
-      estimatedTime: "5 minutos",
+      tip: "Siempre validar que el churn esté asignado antes de agendar",
+      estimatedTime: "5 minutos"
     },
     {
-      id: "step-cancelar",
-      title: "Paso 1 - Preguntar Motivo de cancelación",
-      description: "Identificar el motivo específico de cancelación",
+      id: "step-motivo",
+      title: "Motivo de cancelación",
+      description: "Identificar la razón específica de cancelación",
       type: "question",
       content: "Preguntar el motivo específico por el cual desea cancelar.",
+      estimatedTime: "2 minutos",
       options: [
         {
-          id: "motivos-medicos",
-          label: "Por motivos médicos (No se siente bien, tiene que continuar con algún otro tratamiento, se encuentra muy enfermo)",
-          nextStep: "step-gestion-especialista"
+          id: "medico",
+          label: "Motivos médicos",
+          nextStep: "step-especialista"
         },
         {
           id: "meta-esperada",
