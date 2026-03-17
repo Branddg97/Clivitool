@@ -101,15 +101,15 @@ export const processList: Record<string, Process[]> = {
       lastUpdated: "Hoy (v8.1.0)"
     },
     {
-      id: "proc-error-direccion-entrega",
-      title: "Error en la Dirección de Entrega",
+      id: "proc-cambio-direccion",
+      title: "Cambio de Dirección",
       description: "Proceso para validar, corregir y confirmar dirección de entrega.",
       category: "supplies",
-      steps: 3,
+      steps: 12,
       avgTime: "15-25 min",
       difficulty: "Medio",
       usage: 0,
-      lastUpdated: "Hoy (v8.1.0)"
+      lastUpdated: "Hoy (v8.1.6)"
     }
   ],
   citas: [
@@ -807,7 +807,7 @@ Paso 7: Marcar como Resuelto.`,
       estimatedTime: "1 minuto",
     },
   ],
-  "proc-error-direccion": [
+  "proc-cambio-direccion": [
     {
       id: "step-1",
       title: "Paso 1 - Sondear por qué necesita cambiar la dirección",
