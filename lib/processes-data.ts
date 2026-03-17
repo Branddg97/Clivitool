@@ -386,6 +386,25 @@ Paso 7: Marcar como Resuelto.`,
       ]
     },
     {
+      id: "step-validacion-orden",
+      title: "Validar orden",
+      description: "Revisión en sistema",
+      type: "question",
+      content: "¿La orden está en status 'Order Validated'?",
+      options: [
+        { id: "si", label: "Sí", nextStep: "step-guia" },
+        { id: "no", label: "No", nextStep: "step-validacion-proceso" }
+      ]
+    },
+    {
+      id: "step-validacion-proceso",
+      title: "Orden en proceso",
+      description: "Aún no validada",
+      type: "info",
+      content: "La orden aún está en proceso de validación.",
+      nextStep: "step-fin"
+    },
+    {
       id: "step-espera-cita",
       title: "Tiempo de espera",
       description: "Aún no se procesa envío",
