@@ -355,27 +355,34 @@ Paso 7: Marcar como Resuelto.`,
   "proc-envio-medicamento": [
     {
       id: "step-1",
-      title: "¿Es Envío de Primera vez?",
-      description: "Determinar si es el primer envío o uno subsecuente",
+      title: "¿Es envío de primera vez?",
+      description: "Identificar tipo de envío",
       type: "question",
-      content: "Preguntar si es el primer envío de medicamento para el paciente.",
+      content: "Confirma si es el primer envío de medicamento para el paciente.",
       options: [
-        { id: "primera-vez", label: "SI - Es envio de primera vez", nextStep: "step-primera-vez" },
-        { id: "subsecuente", label: "NO - Es envío subsecuente", nextStep: "step-subsecuente" }
+        { id: "si", label: "Sí - Primera vez", nextStep: "step-primer-tiempo" },
+        { id: "no", label: "No - Subsecuente", nextStep: "step-pago" }
       ],
-      estimatedTime: "1 minuto",
+      estimatedTime: "1 minuto"
     },
+
+    // 🔹 PRIMERA VEZ
     {
-      id: "step-primera-vez",
-      title: "SI - Es envio de primera vez",
-      description: "Proceso para envíos de primera vez",
-      type: "action",
-      content: "Paso 1 - Indicarle que tarda aproximadamente 2 días en hacerse el envío de medicamento después de su cita.\n\nPaso 2 - Validar en Admin, en el apartado de 'Feed', en la fila de 'Delivery' dar clic en la fila y revisar en 'Detalles de la orden' en la sección derecha de historial.\n\nPaso 3 - En el apartado de 'Historial' validar en la columna de 'Delivery Status' y 'Operator', en la segunda fila tiene que aparecer 'Order Validated' y el nombre de alguna persona.\n\nPaso 4- Si ya se encuentra validado. Compartir la liga de rastreo de la paquetería y mencionar con el paciente que tarda de 5 hasta 7 días hábiles. Si es día viernes se estaría enviando hasta el dia lunes (sábado y domingo no se realizan envios)\n\nADET - Paqueteria en CDMX\nDHL - Paqueteria\nRepartidora Local - 10 kilómetros a la redonda de la oficina\nEntrega en oficina CLIVI - Dirección en oficinas",
-      nextStep: "step-completado",
-      tip: "Validar siempre que el Order Validated esté presente antes de compartir tracking",
-      estimatedTime: "4 minutos",
+      id: "step-primer-tiempo",
+      title: "Validar tiempo post cita",
+      description: "Tiempo de procesamiento inicial",
+      type: "question",
+      content: "¿Ya pasaron 2 días desde la cita?",
+      options: [
+        { id: "si", label: "Sí", nextStep: "step-validacion-orden" },
+        { id: "no", label: "No", nextStep: "step-espera-cita" }
+      ]
     },
+
     {
+      id: "step-espera-cita",
+      title: "Tiempo de espera",
+      description: "Aún no se procesa envío",
       id: "step-subsecuente",
       title: "NO - Es envío subsecuente",
       description: "Proceso para envíos subsecuentes",
