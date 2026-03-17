@@ -1070,32 +1070,110 @@ Paso 7: Marcar como Resuelto.`,
   "proc-agendamiento-citas": [
     {
       id: "step-1",
-      title: "Paso 1- Identificar si es cita 'Primera Vez' o 'Cita Subsecuente'",
-      description: "Determinar el tipo de cita",
-      type: "action",
-      content: "1.1 - Cita Primera Vez - 45 minutos forzosamente (Long)\n\n1.2 - CIta Subsecuente - 30 minutos (Short)\n\n1.3 - Validar si tiene un plan Mensual (Citas cada mes)\n\nPrimera Cita - Long\n\nCita Subsecuente - (Short)\n\nPsicología es la única que se agenda como 'Long'",
-      nextStep: "step-identificar-paciente",
-      estimatedTime: "2 minutos",
+      title: "¿El paciente quiere agendar cita?",
+      type: "question",
+      content: "Confirmar intención.",
+      options: [
+        { id: "si", label: "Sí", nextStep: "step-tipo-cita" },
+        { id: "no", label: "No", nextStep: "step-fin" }
+      ]
     },
     {
-      id: "step-identificar-paciente",
-      title: "Paso 2 - Identificar si es paciente Simple o Complejo",
-      description: "Clasificar al paciente según su plan",
-      type: "action",
-      content: "2.1 - Paciente Simple - agenda con Medicina General - (Diana, Gabrielle, Ma. Fernanda).\n\n2.2 - Paciente Complejo - agenda con Médicos especialistas\n\n2.3 - Diabetes - Endocrinólogos (Grupo específico: Carmona, Pricila, Darielle, Maripaz, Mariela).\n\nNota Crítica: Un paciente Simple puede agendarse con un médico Complejo (para llenar huecos/adelantar), pero un paciente Complejo NUNCA debe ir con un médico Simple.",
-      nextStep: "step-completado",
-      tip: "Validar siempre el tipo de paciente antes de agendar",
-      estimatedTime: "3 minutos",
+      id: "step-tipo-cita",
+      title: "Tipo de cita",
+      type: "question",
+      content: "¿Es primera vez?",
+      options: [
+        { id: "si", label: "Sí", nextStep: "step-long" },
+        { id: "no", label: "No", nextStep: "step-subsecuente" }
+      ]
     },
     {
-      id: "step-completado",
-      title: "Cita Agendada Exitosamente",
-      description: "Proceso de agendamiento completado",
+      id: "step-long",
+      title: "Duración",
+      type: "action",
+      content: "Asignar 45 min (Long).",
+      nextStep: "step-psicologia"
+    },
+    {
+      id: "step-subsecuente",
+      title: "Duración subsecuente",
+      type: "action",
+      content: "Asignar 30 min (Short).",
+      nextStep: "step-psicologia"
+    },
+    {
+      id: "step-psicologia",
+      title: "¿Es Psicología?",
+      type: "question",
+      content: "Validar especialidad.",
+      options: [
+        { id: "si", label: "Sí", nextStep: "step-psico-long" },
+        { id: "no", label: "No", nextStep: "step-plan" }
+      ]
+    },
+    {
+      id: "step-psico-long",
+      title: "Psicología Long",
+      type: "action",
+      content: "Asignar 60 min + médico especialista.",
+      nextStep: "step-plan"
+    },
+    {
+      id: "step-plan",
+      title: "¿Tiene plan mensual?",
+      type: "question",
+      content: "Validar plan del paciente.",
+      options: [
+        { id: "si", label: "Sí", nextStep: "step-paciente" },
+        { id: "no", label: "No", nextStep: "step-paciente" }
+      ]
+    },
+    {
+      id: "step-paciente",
+      title: "Tipo de paciente",
+      type: "question",
+      content: "Clasificar tipo de paciente.",
+      options: [
+        { id: "complejo", label: "Complejo", nextStep: "step-validacion-complejo" },
+        { id: "regular", label: "Regular", nextStep: "step-validacion-simple" }
+      ]
+    },
+    {
+      id: "step-validacion-complejo",
+      title: "Validación Compleja",
+      type: "action",
+      content: "Validar como paciente complejo.",
+      nextStep: "step-medico"
+    },
+    {
+      id: "step-validacion-simple",
+      title: "Validación Simple",
+      type: "action",
+      content: "Validar como paciente regular.",
+      nextStep: "step-medico"
+    },
+    {
+      id: "step-medico",
+      title: "Asignación Médica",
+      type: "action",
+      content: "Asignar médico según reglas.",
+      nextStep: "step-confirmar"
+    },
+    {
+      id: "step-confirmar",
+      title: "Confirmar Cita",
+      type: "action",
+      content: "Confirmar cita correctamente.",
+      nextStep: "step-fin"
+    },
+    {
+      id: "step-fin",
+      title: "Proceso Completado",
       type: "info",
-      content: "La cita ha sido agendada exitosamente. El paciente ha recibido la confirmación y está registrado en el sistema.",
-      estimatedTime: "1 minuto",
-    },
-  ],
+      content: "Cita agendada correctamente."
+    }
+  ]
 }
 
 // Procesos recientes para el dashboard
