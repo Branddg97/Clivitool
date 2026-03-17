@@ -213,7 +213,7 @@ Paso 7: Marcar como Resuelto.`,
       description: "Cambio de especialista por conflicto",
       type: "action",
       content: "Buscar el seguimiento con algún otro especialista disponible → Seguir proceso de agendar cita\n\nPreguntar el motivo\n\nGenerar Task por 'Queja'\n\nSi corresponde cita subsecuente se genera cambio de especialista en Calendly como agendamiento de cita de primera vez (Long)",
-      nextStep: "step-razon-ingreso",
+      nextStep: "step-contencion",
       tip: "Generar Task por 'Queja' si corresponde",
       estimatedTime: "3 minutos",
     },
@@ -233,9 +233,37 @@ Paso 7: Marcar como Resuelto.`,
           id: "zero",
           label: "Zero",
           nextStep: "step-contencion"
-        },
+        }
       ],
       estimatedTime: "1 minuto",
+    },
+    {
+      id: "step-downgrade",
+      title: "Baja por meta alcanzada",
+      description: "Paciente alcanzó su meta",
+      type: "action",
+      content: "Realizar downgrade de dosis y eliminar medicamento.",
+      nextStep: "step-contencion",
+      tip: "Generar Task por 'Queja' para seguimiento",
+      estimatedTime: "2 minutos"
+    },
+    {
+      id: "step-churn-baja",
+      title: "Baja por motivos económicos",
+      description: "No puede pagar o no quiere medicamento",
+      type: "action",
+      content: "Generar Churn de Baja por motivos económicos.",
+      nextStep: "step-contencion",
+      estimatedTime: "2 minutos"
+    },
+    {
+      id: "step-reenvio-insumos",
+      title: "Problemas con envío",
+      description: "Complicaciones con envío de insumos",
+      type: "action",
+      content: "Gestionar re-envío de insumos según proceso correspondiente.",
+      nextStep: "step-contencion",
+      estimatedTime: "2 minutos"
     },
     {
       id: "step-contencion",
