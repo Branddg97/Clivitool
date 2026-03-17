@@ -373,13 +373,118 @@ Paso 7: Marcar como Resuelto.`,
         { id: "no", label: "No - Subsecuente", nextStep: "step-pago" }
       ],
       estimatedTime: "1 minuto"
-      id: "step-completado",
-      title: "Envío Confirmado",
-      description: "Proceso de envío completado",
-      type: "info",
-      content: "El proceso de envío de medicamento ha sido completado. Se ha proporcionado información de rastreo al paciente.",
-      estimatedTime: "1 minuto",
     },
+    {
+      id: "step-primer-tiempo",
+      title: "Validar tiempo post cita",
+      description: "Tiempo de procesamiento inicial",
+      type: "question",
+      content: "¿Ya pasaron 2 días desde la cita?",
+      options: [
+        { id: "si", label: "Sí", nextStep: "step-validacion-orden" },
+        { id: "no", label: "No", nextStep: "step-espera-cita" }
+      ]
+    },
+    {
+      id: "step-espera-cita",
+      title: "Tiempo de espera",
+      description: "Aún no se procesa envío",
+      type: "info",
+      content: "El envío se realiza aproximadamente 2 días después de la cita.",
+      nextStep: "step-fin"
+    },
+    {
+      id: "step-pago",
+      title: "Validar pago",
+      description: "Revisión en Chargebee",
+      type: "question",
+      content: "¿El pago está en status PAID?",
+      options: [
+        { id: "si", label: "Sí", nextStep: "step-envio-registrado" },
+        { id: "no", label: "No", nextStep: "step-sin-pago" }
+      ]
+    },
+    {
+      id: "step-sin-pago",
+      title: "Pago pendiente",
+      description: "No se puede procesar",
+      type: "info",
+      content: "El envío no puede procesarse hasta confirmar el pago.",
+      nextStep: "step-fin"
+    },
+    {
+      id: "step-envio-registrado",
+      title: "Validar envío",
+      description: "Revisión en sistema",
+      type: "question",
+      content: "¿El envío está registrado en Admin?",
+      options: [
+        { id: "si", label: "Sí", nextStep: "step-guia" },
+        { id: "no", label: "No", nextStep: "step-escalar-supplies" }
+      ]
+    },
+    {
+      id: "step-escalar-supplies",
+      title: "Escalar a Supplies",
+      description: "Generación de envío",
+      type: "action",
+      content: "Compartir perfil del paciente en Chat Gmail (Supplies) solicitando envío.",
+      nextStep: "step-fin"
+    },
+    {
+      id: "step-guia",
+      title: "¿Tiene guía de rastreo?",
+      description: "Validación de tracking",
+      type: "question",
+      content: "Confirmar si ya existe guía de rastreo.",
+      options: [
+        { id: "si", label: "Sí", nextStep: "step-viernes" },
+        { id: "no", label: "No", nextStep: "step-sin-guia" }
+      ]
+    },
+    {
+      id: "step-sin-guia",
+      title: "Guía en proceso",
+      description: "Aún no disponible",
+      type: "info",
+      content: "La guía está en proceso de generación.",
+      nextStep: "step-fin"
+    },
+    {
+      id: "step-viernes",
+      title: "¿Hoy es viernes?",
+      description: "Regla de envío",
+      type: "question",
+      content: "Validar si aplica restricción de fin de semana.",
+      options: [
+        { id: "si", label: "Sí", nextStep: "step-viernes-info" },
+        { id: "no", label: "No", nextStep: "step-entrega" }
+      ]
+    },
+    {
+      id: "step-viernes-info",
+      title: "Regla viernes",
+      description: "No hay envíos fin de semana",
+      type: "action",
+      content: "Informar que el envío se procesará hasta lunes y compartir guía.",
+      nextStep: "step-entrega"
+    },
+    {
+      id: "step-entrega",
+      title: "Entrega",
+      description: "Información final",
+      type: "info",
+      content: "Compartir guía de rastreo. Tiempo estimado: 5 a 7 días hábiles.\n\nADET - Paquetería en CDMX\nDHL - Paquetería\nRepartidora Local - 10 kilómetros a la redonda de la oficina\nEntrega en oficina CLIVI",
+      nextStep: "step-fin"
+    },
+    {
+      id: "step-fin",
+      title: "Proceso completado",
+      description: "Fin del flujo",
+      type: "info",
+      content: "Gestión de envío completada.",
+      estimatedTime: "1 minuto"
+    }
   ],
   "proc-cambio-fecha-pago": [
     {
