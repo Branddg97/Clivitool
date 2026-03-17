@@ -248,6 +248,15 @@ Paso 7: Marcar como Resuelto.`,
       estimatedTime: "2 minutos"
     },
     {
+      id: "step-especialista",
+      title: "Canalización médica",
+      description: "Motivo médico o meta alcanzada",
+      type: "action",
+      content: "Canalizar con Dr. Giovani para seguimiento del caso.",
+      nextStep: "step-contencion",
+      estimatedTime: "1 minuto"
+    },
+    {
       id: "step-churn-baja",
       title: "Baja por motivos económicos",
       description: "No puede pagar o no quiere medicamento",
