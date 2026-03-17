@@ -373,35 +373,6 @@ Paso 7: Marcar como Resuelto.`,
         { id: "no", label: "No - Subsecuente", nextStep: "step-pago" }
       ],
       estimatedTime: "1 minuto"
-    },
-
-    // 🔹 PRIMERA VEZ
-    {
-      id: "step-primer-tiempo",
-      title: "Validar tiempo post cita",
-      description: "Tiempo de procesamiento inicial",
-      type: "question",
-      content: "¿Ya pasaron 2 días desde la cita?",
-      options: [
-        { id: "si", label: "Sí", nextStep: "step-validacion-orden" },
-        { id: "no", label: "No", nextStep: "step-espera-cita" }
-      ]
-    },
-
-    {
-      id: "step-espera-cita",
-      title: "Tiempo de espera",
-      description: "Aún no se procesa envío",
-      id: "step-subsecuente",
-      title: "NO - Es envío subsecuente",
-      description: "Proceso para envíos subsecuentes",
-      type: "action",
-      content: "Paso 1- Revisar Chargebee\nValidar fechas de Pago\nValidar que el pago se encuentre en Status 'PAID'\n\nPaso 2 - Confirmar el envio de medicamento\nValidar en Admin la fila de 'Delivery' en la sección de 'Feed'\n\nPaso 3 - Compartir la liga de la rastreo de la paquetería y mencionar con el paciente que tarda de 5 hasta 7 días hábiles. Si es día viernes se estaría enviando hasta el dia lunes (sábado y domingo no se realizan envios)\n\nPaso 4 - Compartir la liga del perfil del PX al grupo de Chat de Gmail de Supplies mencionando que se solicita el envio de medicamento",
-      nextStep: "step-completado",
-      tip: "Siempre validar el status PAID en Chargebee antes de confirmar envío",
-      estimatedTime: "3 minutos",
-    },
-    {
       id: "step-completado",
       title: "Envío Confirmado",
       description: "Proceso de envío completado",
