@@ -260,62 +260,37 @@ Informar que se comunicarán por llamada para gestionar la solicitud y pedir un 
     },
     {
       id: "step-evaluacion-molestia",
-      id: "step-confirmar-cancelacion",
-      title: "¿El paciente quiere cancelar?",
-      description: "Confirmar intención final de cancelación",
+      title: "¿El paciente está muy molesto?",
+      description: "Determinar nivel de molestia",
       type: "question",
       content: "Confirmar si después de las opciones de retención, el paciente aún desea cancelar.",
       options: [
         {
-          id: "no-cancelar",
+          id: "no",
           label: "NO - No quiere cancelar",
-          nextStep: "step-no-cancelar"
+          nextStep: "step-resuelto"
         },
         {
-          id: "si-cancelar",
-          label: "SI - SI Quiere cancelar",
-          nextStep: "step-paciente-molesto"
-        },
-      ],
-      estimatedTime: "1 minuto",
-    },
-    {
-      id: "step-no-cancelar",
-      title: "NO - No quiere cancelar",
-      description: "Paciente decide no cancelar",
-      type: "action",
-      content: "Hacer Ticket para dar un seguimiento y dejar nota\n\nSe marca como Resuelto",
-      nextStep: "step-completado",
-      estimatedTime: "2 minutos",
-    },
-    {
-      id: "step-paciente-molesto",
-      title: "¿El paciente está muy molesto?",
-      description: "Evaluar nivel de molestia del paciente",
-      type: "question",
-      content: "Evaluar si el paciente está muy molesto para determinar el proceso de escalación.",
-      options: [
-        {
-          id: "no-molesto",
-          label: "NO - Cerrar como Resuelto",
-          nextStep: "step-proceso-baja"
-        },
-        {
-          id: "si-molesto",
-          label: "SI - El paciente está muy molesto",
+          id: "si",
+          label: "SÍ - Sí quiere cancelar",
           nextStep: "step-escalacion-urgente"
-        },
-      ],
-      estimatedTime: "1 minuto",
+        }
+      ]
     },
     {
-      id: "step-proceso-baja",
-      title: "Proceso de Baja Estándar",
-      description: "Proceso estándar de baja",
+      id: "step-resuelto",
+      title: "Cerrar como Resuelto",
+      description: "Caso sin escalación",
       type: "action",
-      content: "Cerrar como Resuelto\n\nSe realiza Guía Práctica de solicitud de baja\n\nSe redacta nota\n\nExplicar que se van a comunicar con él (Área de Churn - es baja), se escala por medio del Chat de Gmail al grupo 'Nivel 2: Retención Soporte (Asunto Money)' arrobanado a la persona que tiene el ticket asignado\n\nAbrir el calendario de retenciones. (https://docs.google.com/spreadsheets/d/1LeZxuQLkz15cAIixmoLCLGIkQNnV0GF1FKHHpg7-tG0/edit?usp=sharing) Seleccionar la persona que tiene asignado el Churn.",
+      content: `Cerrar el ticket como Resuelto.
+Realizar Guía Práctica de solicitud de baja.
+Redactar nota en el ticket.
+Explicar que el Área de Churn se comunicará para continuar con la solicitud de baja.
+Escalar por medio del Chat de Gmail al grupo 'Nivel 2: Retención Soporte (Asunto Money)' arrobando a la persona que tiene el ticket asignado.
+Brindar el siguiente script al paciente: Hemos recibido tu solicitud y ya se encuentra registrada. Será atendida en un plazo aproximadamente de 72 horas hábiles. Te pedimos un poco de paciencia mientras nuestro equipo revisa tu caso con el cuidado que merece. Agradecemos mucho tu comprensión y quedamos atentos a cualquier duda.`,
       nextStep: "step-completado",
-      estimatedTime: "4 minutos",
+      tip: "Documentar claramente el procedimiento",
+      estimatedTime: "3 minutos",
     },
     {
       id: "step-escalacion-urgente",
