@@ -155,13 +155,13 @@ export const processSteps: Record<string, ProcessStep[]> = {
       title: "Gestión de Seguimiento",
       description: "Gestionar seguimiento de cancelación existente",
       type: "action",
-      content: `Paso 1: Validar que exista Churn de cancelación y responsable asignado.
-Paso 2: Solicitar día y rango de horario al paciente.
-Paso 3: Validar horarios disponibles con el paciente según calendario visualizado.
-Paso 4: Seleccionar horario y llenar datos de Nombre y Apellido en PX.
-Paso 5: En campo de correo electrónico, colocar correo del paciente registrado con Clivi.
-Paso 6: Mencionar al paciente el horario en que le estarían marcando.
-Paso 7: Marcar como Resuelto.`,
+      content: `Validar que tenga un Churn para cancelación y quién lo tiene asignado.
+Pedir al paciente un día para agendar y un rango de horario.
+Validar horarios disponibles con el paciente de acuerdo al calendario y confirmar horario.
+Seleccionar el horario y llenar los campos de Nombre y Apellido con los datos del paciente.
+En el campo de correo electrónico colocar el correo registrado del paciente en Clivi.
+Mencionar al paciente el horario en el que le estarían marcando y confirmar que la información sea clara.
+Marcar el ticket como Resuelto.`,
       nextStep: "step-completado",
       tip: "Siempre validar que el churn esté asignado antes de agendar",
       estimatedTime: "5 minutos"
@@ -175,14 +175,14 @@ Paso 7: Marcar como Resuelto.`,
       estimatedTime: "2 minutos",
       options: [
         {
-          id: "medico",
+          id: "medicos",
           label: "Motivos médicos",
           nextStep: "step-especialista"
         },
         {
           id: "meta-esperada",
           label: "Ya llegó a su meta esperada",
-          nextStep: "step-downgrade"
+          nextStep: "step-especialista"
         },
         {
           id: "economicos",
@@ -191,8 +191,8 @@ Paso 7: Marcar como Resuelto.`,
         },
         {
           id: "no-quiere-medicamento",
-          label: "Ya no puede pagar porque no quiere el medicamento",
-          nextStep: "step-downgrade"
+          label: "Ya no quiere continuar pagando el medicamento",
+          nextStep: "step-churn-baja"
         },
         {
           id: "problema-envio",
@@ -218,36 +218,6 @@ Paso 7: Marcar como Resuelto.`,
       estimatedTime: "3 minutos",
     },
     {
-      id: "step-razon-ingreso",
-      title: "Paso 2 - Preguntar Razón de ingreso",
-      description: "Identificar el plan del paciente",
-      type: "question",
-      content: "Preguntar la razón de ingreso para determinar el plan y beneficios disponibles.",
-      options: [
-        {
-          id: "diabetes",
-          label: "Diabetes",
-          nextStep: "step-contencion"
-        },
-        {
-          id: "zero",
-          label: "Zero",
-          nextStep: "step-contencion"
-        }
-      ],
-      estimatedTime: "1 minuto",
-    },
-    {
-      id: "step-downgrade",
-      title: "Baja por meta alcanzada",
-      description: "Paciente alcanzó su meta",
-      type: "action",
-      content: "Realizar downgrade de dosis y eliminar medicamento.",
-      nextStep: "step-contencion",
-      tip: "Generar Task por 'Queja' para seguimiento",
-      estimatedTime: "2 minutos"
-    },
-    {
       id: "step-especialista",
       title: "Canalización médica",
       description: "Motivo médico o meta alcanzada",
@@ -258,33 +228,38 @@ Paso 7: Marcar como Resuelto.`,
     },
     {
       id: "step-churn-baja",
-      title: "Baja por motivos económicos",
-      description: "No puede pagar o no quiere medicamento",
+      title: "Churn de Baja",
+      description: "Proceso de baja económica",
       type: "action",
-      content: "Generar Churn de Baja por motivos económicos.",
+      content: "Generar Churn de Baja si el paciente lo solicita por motivos económicos.",
       nextStep: "step-contencion",
+      tip: "Documentar claramente el motivo económico",
       estimatedTime: "2 minutos"
     },
     {
       id: "step-reenvio-insumos",
-      title: "Problemas con envío",
-      description: "Complicaciones con envío de insumos",
+      title: "Re-envío de insumos",
+      description: "Solución a problemas de envío",
       type: "action",
-      content: "Gestionar re-envío de insumos según proceso correspondiente.",
+      content: "Realizar re-envío de insumos al paciente.",
       nextStep: "step-contencion",
+      tip: "Validar dirección correcta antes de reenviar",
       estimatedTime: "2 minutos"
     },
     {
       id: "step-contencion",
-      title: "Paso 3 - Contención",
-      description: "Proceso de contención del paciente",
+      title: "Contención",
+      description: "Proceso de retención",
       type: "action",
-      content: "Ser muy empáticos y defensores del paciente\n\nIdeas de retención:\n\n• Gestión de Especialista: Validar sus citas agendadas, por si es posible reagendar su cita → Seguir proceso de Agendamiento de cita\n\n• Cambio de especialista: Buscar el seguimiento con algún otro especialista disponible → Seguir proceso de agendar cita\n\n• Envío de insumos: Identificar si aplica envio de insumos → Seguir proceso de envío de medicamentos\n\n• Downgrade: Se realiza disminución de dosis, cuando las dosis son altas ejemplo (Wegovy 1.8 en adelante a baja de dosis de 1mg). O se elimina el medicamento. Seleccionar al especialista como 'Gestión de especialista a Balance' y creación de Task a Salud (Admin)",
-      nextStep: "step-confirmar-cancelacion",
-      tip: "Mostrar empatía genuina y buscar soluciones alternativas",
+      content: `Realizar contención siendo empáticos y defensores del paciente.
+Explicar el proceso de solicitud de baja.
+Informar que se comunicarán por llamada para gestionar la solicitud y pedir un día y horario disponible para el contacto.`,
+      nextStep: "step-evaluacion-molestia",
+      tip: "Siempre ser empático y explicar claramente el proceso",
       estimatedTime: "3 minutos",
     },
     {
+      id: "step-evaluacion-molestia",
       id: "step-confirmar-cancelacion",
       title: "¿El paciente quiere cancelar?",
       description: "Confirmar intención final de cancelación",
